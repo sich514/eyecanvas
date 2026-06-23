@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
+import ConsentBanner from '@/components/ConsentBanner'
+import AnalyticsPixels from '@/components/AnalyticsPixels'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -20,9 +23,15 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const ga4Id = process.env.NEXT_PUBLIC_GA4_ID
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
+        {children}
+        <ConsentBanner />
+        <AnalyticsPixels />
+      </body>
+      {ga4Id && <GoogleAnalytics gaId={ga4Id} />}
     </html>
   )
 }

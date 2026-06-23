@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { track } from '@/lib/analytics'
 
 export type Format = 'solo' | 'duo' | 'trio' | 'quad'
 export type BgStyle = 'classic' | 'stardust'
@@ -252,7 +253,21 @@ export default function Configurator({ maxPreviewW = 560 }: { maxPreviewW?: numb
 
   const fmt = FORMATS.find(f => f.id === format)!
   const total = BASE_PRICES[format] + (bgStyle === 'stardust' ? STARDUST_ADDON : 0)
-  const handleStart = () => router.push(`/upload?format=${format}&style=${bgStyle}`)
+
+  useEffect(() => { track('configurator_view') }, [])
+
+  const handleFormatSelect = (f: Format) => {
+    setFormat(f)
+    track('format_selected', { format: f, price: BASE_PRICES[f] + (bgStyle === 'stardust' ? STARDUST_ADDON : 0) })
+  }
+  const handleStyleSelect = (s: BgStyle) => {
+    setBgStyle(s)
+    track('style_selected', { style: s, format, price: BASE_PRICES[format] + (s === 'stardust' ? STARDUST_ADDON : 0) })
+  }
+  const handleStart = () => {
+    track('configurator_cta_click', { format, style: bgStyle, price: total })
+    router.push(`/upload?format=${format}&style=${bgStyle}`)
+  }
 
   return (
     <>
@@ -324,7 +339,7 @@ export default function Configurator({ maxPreviewW = 560 }: { maxPreviewW?: numb
             </p>
             <div style={{ display: 'flex', gap: 6 }}>
               {FORMATS.map(f => (
-                <FormatButton key={f.id} fmt={f} selected={format === f.id} onClick={() => setFormat(f.id)} compact={isMobile} />
+                <FormatButton key={f.id} fmt={f} selected={format === f.id} onClick={() => handleFormatSelect(f.id)} compact={isMobile} />
               ))}
             </div>
           </div>
@@ -333,8 +348,8 @@ export default function Configurator({ maxPreviewW = 560 }: { maxPreviewW?: numb
           <div style={{ marginBottom: isMobile ? 20 : 32 }}>
             <p style={{ fontSize: 15, fontWeight: 700, margin: '0 0 12px', color: '#fff' }}>Background style</p>
             <div style={{ display: 'flex', gap: 10 }}>
-              <BgButton id="classic" selected={bgStyle === 'classic'} onClick={() => setBgStyle('classic')} />
-              <BgButton id="stardust" selected={bgStyle === 'stardust'} onClick={() => setBgStyle('stardust')} />
+              <BgButton id="classic" selected={bgStyle === 'classic'} onClick={() => handleStyleSelect('classic')} />
+              <BgButton id="stardust" selected={bgStyle === 'stardust'} onClick={() => handleStyleSelect('stardust')} />
             </div>
           </div>
 

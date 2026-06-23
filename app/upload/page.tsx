@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { track } from '@/lib/analytics'
 import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/lib/products'
 import type { Format, BgStyle } from '@/lib/products'
 
@@ -28,6 +29,8 @@ function UploadFlow() {
   const fmt = FORMATS.find(f => f.id === format) ?? FORMATS[0]
   const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_ADDON : 0)
 
+  useEffect(() => { track('upload_page_view', { format, style }) }, [])
+
   const [step, setStep] = useState<Step>('upload')
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -42,13 +45,16 @@ function UploadFlow() {
   const onFileSelect = useCallback((f: File) => {
     setError(null)
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(f.type)) {
+      track('photo_quality_rejected', { error: 'invalid_type' })
       setError('Please upload a JPG, PNG, or WebP image.')
       return
     }
     if (f.size > 20 * 1024 * 1024) {
+      track('photo_quality_rejected', { error: 'too_large' })
       setError('File must be under 20 MB.')
       return
     }
+    track('photo_upload_started')
     setFile(f)
     setPreview(URL.createObjectURL(f))
   }, [])
@@ -70,11 +76,16 @@ function UploadFlow() {
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
       setUploadProgress(85)
       const data = await res.json()
-      if (!res.ok) { setError(data.error || 'Upload failed'); setUploading(false); return }
+      if (!res.ok) {
+        track('photo_upload_failed', { error: data.error })
+        setError(data.error || 'Upload failed'); setUploading(false); return
+      }
+      track('photo_upload_success', { format, style })
       setUploadResult(data)
       setUploadProgress(100)
       setTimeout(() => { setUploading(false); setStep('details') }, 400)
     } catch {
+      track('photo_upload_failed', { error: 'network_error' })
       setError('Upload failed. Please try again.')
       setUploading(false)
     }
