@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { createServiceClient } from '@/lib/supabase'
 import PreviewClient from './PreviewClient'
 import { notFound } from 'next/navigation'
@@ -14,5 +15,9 @@ export default async function PreviewPage({ params }: { params: Promise<{ id: st
 
   if (error || !order) notFound()
 
-  return <PreviewClient order={order} />
+  return (
+    <Suspense>
+      <PreviewClient order={order} />
+    </Suspense>
+  )
 }

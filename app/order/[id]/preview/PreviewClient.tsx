@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Order } from '@/lib/supabase'
 import { TIERS } from '@/lib/tiers'
+import { track } from '@/lib/analytics'
 
 const STATUS_MESSAGES: Record<string, { title: string; desc: string }> = {
   pending_payment: { title: 'Payment pending', desc: 'Your payment has not been confirmed yet. Please complete checkout.' },
@@ -18,8 +20,15 @@ export default function PreviewClient({ order }: { order: Order }) {
   const [showRevisionForm, setShowRevisionForm] = useState(false)
   const [loading, setLoading] = useState<'approve' | 'revise' | null>(null)
   const [done, setDone] = useState<'approved' | 'revised' | null>(null)
-
   const [error, setError] = useState<string | null>(null)
+  const params = useSearchParams()
+
+  useEffect(() => {
+    // Fires only when coming from Stripe (session_id in URL = just paid)
+    if (params.get('session_id')) {
+      track('checkout_completed', { order_id: order.id, price: order.price_cents / 100 })
+    }
+  }, [])
 
   const tier = TIERS[order.tier]
 
