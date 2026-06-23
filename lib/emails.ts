@@ -2,11 +2,11 @@ import { Resend } from 'resend'
 import { Order } from './supabase'
 import { TIERS } from './tiers'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'EyeCanvas <noreply@eyecanvas.co>'
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export async function sendPreviewEmail(order: Order) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
   const previewUrl = `${BASE_URL}/order/${order.id}/preview`
   await resend.emails.send({
     from: FROM,
@@ -29,6 +29,7 @@ export async function sendPreviewEmail(order: Order) {
 }
 
 export async function sendOrderConfirmedEmail(order: Order) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const tier = TIERS[order.tier]
   await resend.emails.send({
     from: FROM,
@@ -51,6 +52,7 @@ export async function sendOrderConfirmedEmail(order: Order) {
 }
 
 export async function sendShippedEmail(order: Order) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
   await resend.emails.send({
     from: FROM,
     to: order.customer_email,
@@ -68,6 +70,7 @@ export async function sendShippedEmail(order: Order) {
 }
 
 export async function sendRevisionNotificationEmail(order: Order) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@eyecanvas.co'
   await resend.emails.send({
     from: FROM,

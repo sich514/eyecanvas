@@ -4,10 +4,11 @@ import { createServiceClient } from '@/lib/supabase'
 import { BASE_PRICES, FORMATS, STARDUST_ADDON } from '@/components/Configurator'
 import type { Format, BgStyle } from '@/components/Configurator'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: NextRequest) {
   try {
+    const stripe = getStripe()
     const body = await req.json()
     const { format, style, upload_id, original_image_url, customer_name, customer_email, shipping_address } = body
 

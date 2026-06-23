@@ -4,7 +4,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { upscaleImage } from '@/lib/replicate'
 import { sendPreviewEmail } from '@/lib/emails'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   let event: Stripe.Event
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
+    event = getStripe().webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (err) {
     console.error('Stripe signature error:', err)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
