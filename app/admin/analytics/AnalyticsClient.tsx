@@ -4,10 +4,9 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 
 const FUNNEL = [
-  { key: 'page_view', label: 'Page Views' },
+  { key: 'page_view', label: 'Landing Page Visit' },
   { key: 'configurator_view', label: 'Saw Configurator' },
   { key: 'configurator_cta_click', label: 'Clicked Order' },
-  { key: 'upload_page_view', label: 'Upload Page' },
   { key: 'photo_upload_success', label: 'Photo Uploaded' },
   { key: 'checkout_completed', label: 'Paid' },
 ]

@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Order } from '@/lib/supabase'
 import { TIERS } from '@/lib/tiers'
-import { track } from '@/lib/analytics'
 
 const STATUS_MESSAGES: Record<string, { title: string; desc: string }> = {
   pending_payment: { title: 'Payment pending', desc: 'Your payment has not been confirmed yet. Please complete checkout.' },
@@ -20,7 +19,6 @@ export default function PreviewClient({ order }: { order: Order }) {
   const [loading, setLoading] = useState<'approve' | 'revise' | null>(null)
   const [done, setDone] = useState<'approved' | 'revised' | null>(null)
 
-  useEffect(() => { track('preview_viewed', { order_id: order.id }) }, [])
   const [error, setError] = useState<string | null>(null)
 
   const tier = TIERS[order.tier]
@@ -29,7 +27,7 @@ export default function PreviewClient({ order }: { order: Order }) {
     setLoading('approve')
     setError(null)
     const res = await fetch(`/api/orders/${order.id}/approve`, { method: 'POST' })
-    if (res.ok) { track('preview_approved', { order_id: order.id }); setDone('approved') }
+    if (res.ok) { setDone('approved') }
     else { const d = await res.json(); setError(d.error || 'Failed') }
     setLoading(null)
   }
@@ -42,7 +40,7 @@ export default function PreviewClient({ order }: { order: Order }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ revision_notes: revisionText }),
     })
-    if (res.ok) { track('revision_requested', { order_id: order.id }); setDone('revised') }
+    if (res.ok) { setDone('revised') }
     else { const d = await res.json(); setError(d.error || 'Failed') }
     setLoading(null)
   }

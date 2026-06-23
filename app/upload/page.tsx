@@ -29,7 +29,6 @@ function UploadFlow() {
   const fmt = FORMATS.find(f => f.id === format) ?? FORMATS[0]
   const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_ADDON : 0)
 
-  useEffect(() => { track('upload_page_view', { format, style }) }, [])
 
   const [step, setStep] = useState<Step>('upload')
   const [file, setFile] = useState<File | null>(null)
@@ -45,16 +44,16 @@ function UploadFlow() {
   const onFileSelect = useCallback((f: File) => {
     setError(null)
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(f.type)) {
-      track('photo_quality_rejected', { error: 'invalid_type' })
+      
       setError('Please upload a JPG, PNG, or WebP image.')
       return
     }
     if (f.size > 20 * 1024 * 1024) {
-      track('photo_quality_rejected', { error: 'too_large' })
+      
       setError('File must be under 20 MB.')
       return
     }
-    track('photo_upload_started')
+    
     setFile(f)
     setPreview(URL.createObjectURL(f))
   }, [])
@@ -77,7 +76,7 @@ function UploadFlow() {
       setUploadProgress(85)
       const data = await res.json()
       if (!res.ok) {
-        track('photo_upload_failed', { error: data.error })
+        
         setError(data.error || 'Upload failed'); setUploading(false); return
       }
       track('photo_upload_success', { format, style })
@@ -85,7 +84,7 @@ function UploadFlow() {
       setUploadProgress(100)
       setTimeout(() => { setUploading(false); setStep('details') }, 400)
     } catch {
-      track('photo_upload_failed', { error: 'network_error' })
+      
       setError('Upload failed. Please try again.')
       setUploading(false)
     }

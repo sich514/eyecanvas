@@ -4,6 +4,7 @@ import FadeUp from '@/components/FadeUp'
 import BeforeAfterSlider from '@/components/BeforeAfterSlider'
 import AccordionItem from '@/components/AccordionItem'
 import Configurator from '@/components/Configurator'
+import PageTracker from '@/components/PageTracker'
 
 const OCCASIONS = ["Valentine's Day", "New Baby", "Wedding Gift", "Anniversary", "Mother's Day", "Just Because", "Birthday", "Graduation"]
 
@@ -43,6 +44,7 @@ const TESTIMONIALS = [
 export default function LandingPage() {
   return (
     <div className="bg-[#0a0a0a] text-white overflow-x-hidden">
+      <PageTracker />
 
       {/* ── NAV ─────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-5"
