@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Order, OrderStatus } from '@/lib/supabase'
 import { TIERS } from '@/lib/tiers'
 
@@ -18,9 +19,12 @@ export default function AdminClient({ orders }: { orders: Order[] }) {
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">EyeCanvas — Admin</h1>
-          <form action="/api/admin/logout" method="POST">
-            <button type="submit" className="text-sm text-gray-400 hover:text-gray-600">Log out</button>
-          </form>
+          <div className="flex items-center gap-4">
+            <Link href="/admin/analytics" className="text-sm text-purple-600 hover:text-purple-800 font-medium">📊 Analytics</Link>
+            <form action="/api/admin/logout" method="POST">
+              <button type="submit" className="text-sm text-gray-400 hover:text-gray-600">Log out</button>
+            </form>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-8">
