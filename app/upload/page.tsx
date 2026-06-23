@@ -3,8 +3,8 @@
 import { useState, useRef, useCallback, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/components/Configurator'
-import type { Format, BgStyle } from '@/components/Configurator'
+import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/lib/products'
+import type { Format, BgStyle } from '@/lib/products'
 
 type Step = 'upload' | 'details'
 

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createServiceClient } from '@/lib/supabase'
-import { BASE_PRICES, FORMATS, STARDUST_ADDON } from '@/components/Configurator'
-import type { Format, BgStyle } from '@/components/Configurator'
+import { BASE_PRICES, FORMATS, STARDUST_ADDON } from '@/lib/products'
+import type { Format, BgStyle } from '@/lib/products'
 
 const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!)
 
