@@ -245,7 +245,13 @@ function PriceDisplay({ price }: { price: number }) {
 }
 
 /* ─── Main configurator ─────────────────────────────────── */
-export default function Configurator({ maxPreviewW = 560 }: { maxPreviewW?: number }) {
+export default function Configurator({
+  maxPreviewW = 560,
+  onStart,
+}: {
+  maxPreviewW?: number
+  onStart?: (format: Format, style: BgStyle) => void
+}) {
   const [format, setFormat] = useState<Format>('solo')
   const [bgStyle, setBgStyle] = useState<BgStyle>('classic')
   const router = useRouter()
@@ -263,7 +269,11 @@ export default function Configurator({ maxPreviewW = 560 }: { maxPreviewW?: numb
   const handleStyleSelect = (s: BgStyle) => { trackInteraction(); setBgStyle(s) }
   const handleStart = () => {
     track('configurator_cta_click', { format, style: bgStyle, price: total })
-    router.push(`/upload?format=${format}&style=${bgStyle}`)
+    if (onStart) {
+      onStart(format, bgStyle)
+    } else {
+      router.push(`/upload?format=${format}&style=${bgStyle}`)
+    }
   }
 
   return (

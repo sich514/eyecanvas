@@ -3,7 +3,7 @@ import Image from 'next/image'
 import FadeUp from '@/components/FadeUp'
 import BeforeAfterSlider from '@/components/BeforeAfterSlider'
 import AccordionItem from '@/components/AccordionItem'
-import Configurator from '@/components/Configurator'
+import InlineOrderFlow from '@/components/InlineOrderFlow'
 import PageTracker from '@/components/PageTracker'
 import ScrollToPricingBtn from '@/components/ScrollToPricingBtn'
 
@@ -306,7 +306,7 @@ export default function LandingPage() {
             </div>
           </FadeUp>
           <FadeUp delay={0.1}>
-            <Configurator />
+            <InlineOrderFlow />
           </FadeUp>
         </div>
       </section>
