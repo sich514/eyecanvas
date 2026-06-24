@@ -20,6 +20,20 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'EyeCanvas — AI Eye Portrait Gifts',
   description: 'Transform your eye into a stunning canvas print. AI-enhanced, print-on-demand.',
+  openGraph: {
+    title: 'EyeCanvas — AI Eye Portrait Gifts',
+    description: 'Turn your eye into a stunning canvas. AI-enhanced portraits, printed & shipped.',
+    url: 'https://eyecanvas.vercel.app',
+    siteName: 'EyeCanvas',
+    images: [{ url: 'https://eyecanvas.vercel.app/iris-hero.jpg', width: 1200, height: 630, alt: 'EyeCanvas — AI Eye Portrait' }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EyeCanvas — AI Eye Portrait Gifts',
+    description: 'Turn your eye into a stunning canvas. AI-enhanced portraits, printed & shipped.',
+    images: ['https://eyecanvas.vercel.app/iris-hero.jpg'],
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

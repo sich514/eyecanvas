@@ -31,7 +31,6 @@ function getUTM(param: string): string | null {
 export function track(event: EventName, props?: EventProps) {
   if (typeof window === 'undefined') return
 
-  const consent = localStorage.getItem('ec_consent')
   const payload = {
     event,
     timestamp: new Date().toISOString(),
@@ -45,7 +44,7 @@ export function track(event: EventName, props?: EventProps) {
   }
 
   // GA4
-  if (consent === 'accepted' && typeof (window as any).gtag !== 'undefined') {
+  if (typeof (window as any).gtag !== 'undefined') {
     if (event === 'checkout_completed' && props?.price) {
       ;(window as any).gtag('event', 'purchase', { value: props.price, currency: 'USD', ...payload })
     } else {
@@ -54,7 +53,7 @@ export function track(event: EventName, props?: EventProps) {
   }
 
   // Meta Pixel
-  if (consent === 'accepted' && typeof (window as any).fbq !== 'undefined') {
+  if (typeof (window as any).fbq !== 'undefined') {
     // Skip page_view — pixel fires it itself on init to avoid duplicate
     if (event !== 'page_view') {
       if (event === 'checkout_completed' && props?.price) {
@@ -72,7 +71,7 @@ export function track(event: EventName, props?: EventProps) {
   }
 
   // TikTok Pixel
-  if (consent === 'accepted' && typeof (window as any).ttq !== 'undefined') {
+  if (typeof (window as any).ttq !== 'undefined') {
     const ttMap: Record<EventName, string> = {
       page_view: 'ViewContent',
       configurator_view: 'ViewContent',
