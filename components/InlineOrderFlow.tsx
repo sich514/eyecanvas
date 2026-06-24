@@ -401,25 +401,24 @@ export default function InlineOrderFlow() {
                       {checkingOut ? 'Redirecting…' : `Pay $${total} →`}
                     </button>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 10, color: '#333' }}>🔒</span>
-                    {[
-                      { label: 'Stripe', color: '#635BFF', bg: 'rgba(99,91,255,0.1)', border: 'rgba(99,91,255,0.25)' },
-                      { label: ' Pay', color: '#aaa', bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.1)' },
-                      { label: 'VISA', color: 'rgba(180,195,255,0.5)', bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.1)', italic: true },
-                    ].map(b => (
-                      <span key={b.label} style={{
-                        height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 6px',
-                        borderRadius: 3, border: `1px solid ${b.border}`, background: b.bg,
-                        color: b.color, fontSize: 10, fontWeight: 600,
-                        fontStyle: b.italic ? 'italic' : 'normal',
-                        fontFamily: b.italic ? 'serif' : 'inherit',
-                      }}>{b.label}</span>
-                    ))}
-                    <span style={{
-                      height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 5px',
-                      borderRadius: 3, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)',
-                    }}>
+                    {/* Stripe */}
+                    <span style={{ height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 6px', borderRadius: 3, border: '1px solid rgba(99,91,255,0.25)', background: 'rgba(99,91,255,0.1)', color: '#635BFF', fontSize: 10, fontWeight: 600, gap: 3 }}>
+                      <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#635BFF"/><path d="M4.2 4c0-.4.3-.6.8-.6.7 0 1.5.2 2.2.6V2.3C6.7 2 6 1.9 5 1.9 3.2 1.9 2 2.9 2 4.3c0 2.2 3 1.9 3 2.8 0 .4-.3.5-.8.5-.7 0-1.6-.3-2.3-.7v1.8c.7.3 1.5.5 2.3.5 1.7 0 2.9-.8 2.9-2.2C7 4.8 4.2 5.2 4.2 4z" fill="white"/></svg>
+                      Stripe
+                    </span>
+                    {/* Apple Pay */}
+                    <span style={{ height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 6px', borderRadius: 3, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)', color: '#888', fontSize: 10, fontWeight: 600, gap: 3 }}>
+                      <svg width="8" height="10" viewBox="0 0 14 17" fill="rgba(255,255,255,0.55)">
+                        <path d="M11.8 8.8c0-2 1.6-3 1.7-3.1C12.4 4 11 3.8 10.5 3.8c-1.1-.1-2.2.7-2.7.7-.5 0-1.4-.7-2.3-.6C4.3 3.9 3 4.7 2.3 6c-1.4 2.5-.4 6.2 1 8.2.6.9 1.4 1.9 2.4 1.9.9 0 1.3-.6 2.4-.6 1.1 0 1.4.6 2.3.6 1 0 1.7-.9 2.4-1.8.7-1 1-2 1-2.1-.1 0-1.9-.7-2-2.9zM9.7 2.2c.5-.6.8-1.5.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.7-.4 2.2-1.1z"/>
+                      </svg>
+                      Pay
+                    </span>
+                    {/* Visa */}
+                    <span style={{ height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 6px', borderRadius: 3, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)', color: 'rgba(180,195,255,0.5)', fontSize: 10, fontWeight: 600, fontStyle: 'italic', fontFamily: 'serif' }}>VISA</span>
+                    {/* Mastercard */}
+                    <span style={{ height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 5px', borderRadius: 3, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)' }}>
                       <svg width="20" height="12" viewBox="0 0 24 14">
                         <circle cx="8" cy="7" r="7" fill="#EB001B" opacity="0.7"/>
                         <circle cx="16" cy="7" r="7" fill="#F79E1B" opacity="0.7"/>
