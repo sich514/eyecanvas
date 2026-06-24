@@ -5,6 +5,7 @@ import BeforeAfterSlider from '@/components/BeforeAfterSlider'
 import AccordionItem from '@/components/AccordionItem'
 import Configurator from '@/components/Configurator'
 import PageTracker from '@/components/PageTracker'
+import ScrollToPricingBtn from '@/components/ScrollToPricingBtn'
 
 const OCCASIONS = ["Valentine's Day", "New Baby", "Wedding Gift", "Anniversary", "Mother's Day", "Just Because", "Birthday", "Graduation"]
 
@@ -70,13 +71,13 @@ export default function LandingPage() {
         </span>
         <div className="flex items-center gap-6">
           <a href="#how-it-works" className="hidden md:block text-sm text-white/60 hover:text-white transition-colors">How it works</a>
-          <a href="#pricing" onClick={(e)=>{e.preventDefault();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}} className="hidden md:block text-sm text-white/60 hover:text-white transition-colors">Pricing</a>
-          <a href="#pricing" onClick={(e)=>{e.preventDefault();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}}
+          <ScrollToPricingBtn className="hidden md:block text-sm text-white/60 hover:text-white transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Pricing</ScrollToPricingBtn>
+          <ScrollToPricingBtn
             className="px-5 py-2.5 rounded-full text-sm font-semibold text-[#0a0a0a] transition-all hover:brightness-110"
-            style={{ background: '#C8883A' }}
+            style={{ background: '#C8883A', border: 'none', cursor: 'pointer' }}
           >
             Get started
-          </a>
+          </ScrollToPricingBtn>
         </div>
       </nav>
 
@@ -111,17 +112,18 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <a href="#pricing" onClick={(e)=>{e.preventDefault();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}}
+            <ScrollToPricingBtn
               className="w-full sm:w-auto px-8 py-4 rounded-full font-semibold text-base text-[#0a0a0a] shadow-lg transition-all hover:brightness-110 hover:scale-[1.02]"
-              style={{ background: '#C8883A', boxShadow: '0 0 40px rgba(200,136,58,0.4)' }}
+              style={{ background: '#C8883A', boxShadow: '0 0 40px rgba(200,136,58,0.4)', border: 'none', cursor: 'pointer' }}
             >
               Create Mine — from $79
-            </a>
-            <a href="#pricing" onClick={(e)=>{e.preventDefault();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}}
+            </ScrollToPricingBtn>
+            <ScrollToPricingBtn
               className="w-full sm:w-auto px-8 py-4 rounded-full font-semibold text-base text-white border border-white/40 backdrop-blur-sm hover:bg-white/10 transition-all"
+              style={{ background: 'none', cursor: 'pointer' }}
             >
               Give as a Gift
-            </a>
+            </ScrollToPricingBtn>
           </div>
 
           {/* Social proof */}
@@ -195,12 +197,12 @@ export default function LandingPage() {
                 <p className="text-white/60 text-lg leading-relaxed mb-10">
                   Then we print them at gallery scale.
                 </p>
-                <a href="#pricing" onClick={(e)=>{e.preventDefault();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}}
+                <ScrollToPricingBtn
                   className="inline-flex items-center gap-2 font-semibold text-sm transition-colors"
-                  style={{ color: '#C8883A' }}
+                  style={{ color: '#C8883A', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                 >
                   See what yours looks like →
-                </a>
+                </ScrollToPricingBtn>
               </div>
             </FadeUp>
           </div>
@@ -318,12 +320,12 @@ export default function LandingPage() {
           <div className="flex flex-wrap justify-center gap-3">
             {OCCASIONS.map((o, i) => (
               <FadeUp key={o} delay={i * 0.05}>
-                <a href="#pricing" onClick={(e)=>{e.preventDefault();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}}
+                <ScrollToPricingBtn
                   className="px-5 py-2.5 rounded-full border border-white/10 text-sm text-white/60 hover:text-[#C8883A] hover:border-[#C8883A]/40 transition-all"
-                  style={{ background: 'rgba(255,255,255,0.03)' }}
+                  style={{ background: 'rgba(255,255,255,0.03)', cursor: 'pointer' }}
                 >
                   {o}
-                </a>
+                </ScrollToPricingBtn>
               </FadeUp>
             ))}
           </div>
@@ -408,12 +410,12 @@ export default function LandingPage() {
             <p className="text-white/55 text-lg mb-10">
               What does yours look like at 24 inches?
             </p>
-            <a href="#pricing" onClick={(e)=>{e.preventDefault();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}}
+            <ScrollToPricingBtn
               className="inline-block px-10 py-5 rounded-full font-bold text-lg text-[#0a0a0a] transition-all hover:brightness-110 hover:scale-105"
-              style={{ background: '#C8883A', boxShadow: '0 0 60px rgba(200,136,58,0.35)' }}
+              style={{ background: '#C8883A', boxShadow: '0 0 60px rgba(200,136,58,0.35)', border: 'none', cursor: 'pointer' }}
             >
               Start My Portrait
-            </a>
+            </ScrollToPricingBtn>
             <p className="mt-6 text-white/30 text-sm">Ships in 5–7 business days · Free revision included</p>
           </div>
         </FadeUp>
