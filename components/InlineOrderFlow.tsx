@@ -401,7 +401,32 @@ export default function InlineOrderFlow() {
                       {checkingOut ? 'Redirecting…' : `Pay $${total} →`}
                     </button>
                   </div>
-                  <p style={{ textAlign: 'center', color: '#333', fontSize: 11, marginTop: 10 }}>🔒 Secure checkout via Stripe</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 10, color: '#333' }}>🔒</span>
+                    {[
+                      { label: 'Stripe', color: '#635BFF', bg: 'rgba(99,91,255,0.1)', border: 'rgba(99,91,255,0.25)' },
+                      { label: ' Pay', color: '#aaa', bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.1)' },
+                      { label: 'VISA', color: 'rgba(180,195,255,0.5)', bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.1)', italic: true },
+                    ].map(b => (
+                      <span key={b.label} style={{
+                        height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 6px',
+                        borderRadius: 3, border: `1px solid ${b.border}`, background: b.bg,
+                        color: b.color, fontSize: 10, fontWeight: 600,
+                        fontStyle: b.italic ? 'italic' : 'normal',
+                        fontFamily: b.italic ? 'serif' : 'inherit',
+                      }}>{b.label}</span>
+                    ))}
+                    <span style={{
+                      height: 18, display: 'inline-flex', alignItems: 'center', padding: '0 5px',
+                      borderRadius: 3, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)',
+                    }}>
+                      <svg width="20" height="12" viewBox="0 0 24 14">
+                        <circle cx="8" cy="7" r="7" fill="#EB001B" opacity="0.7"/>
+                        <circle cx="16" cy="7" r="7" fill="#F79E1B" opacity="0.7"/>
+                        <path d="M12 1.5a7 7 0 010 11A7 7 0 0112 1.5z" fill="#FF5F00" opacity="0.85"/>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
