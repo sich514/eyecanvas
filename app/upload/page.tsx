@@ -20,6 +20,8 @@ const STYLE_LABELS: Record<BgStyle, string> = {
   stardust: 'Stardust Effect',
 }
 
+const EYE_LABELS = ['Left eye', 'Right eye', 'Third eye', 'Fourth eye']
+
 function UploadFlow() {
   const router = useRouter()
   const params = useSearchParams()
@@ -28,71 +30,75 @@ function UploadFlow() {
   const style = (params.get('style') ?? 'classic') as BgStyle
 
   const fmt = FORMATS.find(f => f.id === format) ?? FORMATS[0]
+  const eyeCount = fmt.eyes
   const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_ADDON : 0)
 
-
   const [step, setStep] = useState<Step>('upload')
-  const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
+  const [files, setFiles] = useState<(File | null)[]>(() => Array(eyeCount).fill(null))
+  const [previews, setPreviews] = useState<(string | null)[]>(() => Array(eyeCount).fill(null))
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [uploadResult, setUploadResult] = useState<{ upload_id: string; url: string } | null>(null)
+  const [uploadResults, setUploadResults] = useState<({ upload_id: string; url: string } | null)[]>(() => Array(eyeCount).fill(null))
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<CustomerInfo>({ name: '', email: '', line1: '', line2: '', city: '', state: '', postal_code: '', country: 'US' })
   const [checkingOut, setCheckingOut] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
-  const onFileSelect = useCallback((f: File) => {
+  const allFilesSelected = files.every(f => f !== null)
+
+  const onFileSelect = useCallback((f: File, idx: number) => {
     setError(null)
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(f.type)) {
-      
       setError('Please upload a JPG, PNG, or WebP image.')
       return
     }
     if (f.size > 20 * 1024 * 1024) {
-      
       setError('File must be under 20 MB.')
       return
     }
-    
-    setFile(f)
-    setPreview(URL.createObjectURL(f))
+    setFiles(prev => { const next = [...prev]; next[idx] = f; return next })
+    setPreviews(prev => { const next = [...prev]; next[idx] = URL.createObjectURL(f); return next })
   }, [])
 
-  const onDrop = useCallback((e: React.DragEvent) => {
+  const onDrop = useCallback((e: React.DragEvent, idx: number) => {
     e.preventDefault()
     const f = e.dataTransfer.files[0]
-    if (f) onFileSelect(f)
+    if (f) onFileSelect(f, idx)
   }, [onFileSelect])
 
+  const removeFile = (idx: number) => {
+    setFiles(prev => { const next = [...prev]; next[idx] = null; return next })
+    setPreviews(prev => { const next = [...prev]; next[idx] = null; return next })
+    setUploadResults(prev => { const next = [...prev]; next[idx] = null; return next })
+  }
+
   const handleUpload = async () => {
-    if (!file) return
+    if (!allFilesSelected) return
     setUploading(true)
-    setUploadProgress(20)
-    const fd = new FormData()
-    fd.append('file', file)
+    setError(null)
+    const results: ({ upload_id: string; url: string } | null)[] = Array(eyeCount).fill(null)
     try {
-      setUploadProgress(50)
-      const res = await fetch('/api/upload', { method: 'POST', body: fd })
-      setUploadProgress(85)
-      const data = await res.json()
-      if (!res.ok) {
-        
-        setError(data.error || 'Upload failed'); setUploading(false); return
+      for (let i = 0; i < eyeCount; i++) {
+        setUploadProgress(Math.round((i / eyeCount) * 80))
+        const fd = new FormData()
+        fd.append('file', files[i]!)
+        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+        const data = await res.json()
+        if (!res.ok) { setError(data.error || 'Upload failed'); setUploading(false); return }
+        results[i] = data
       }
-      track('photo_upload_success', { format, style })
-      setUploadResult(data)
       setUploadProgress(100)
+      setUploadResults(results)
+      track('photo_upload_success', { format, style })
       setTimeout(() => { setUploading(false); setStep('details') }, 400)
     } catch {
-      
       setError('Upload failed. Please try again.')
       setUploading(false)
     }
   }
 
   const handleCheckout = async () => {
-    if (!uploadResult) return
+    if (uploadResults.some(r => !r)) return
     setCheckingOut(true)
     setError(null)
     try {
@@ -102,8 +108,9 @@ function UploadFlow() {
         body: JSON.stringify({
           format,
           style,
-          upload_id: uploadResult.upload_id,
-          original_image_url: uploadResult.url,
+          upload_id: uploadResults[0]!.upload_id,
+          original_image_url: uploadResults[0]!.url,
+          extra_image_urls: uploadResults.slice(1).map(r => r!.url),
           customer_name: info.name,
           customer_email: info.email,
           shipping_address: { line1: info.line1, line2: info.line2, city: info.city, state: info.state, postal_code: info.postal_code, country: info.country },
@@ -140,10 +147,7 @@ function UploadFlow() {
           padding: '14px 18px', marginBottom: 32,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 8, overflow: 'hidden', flexShrink: 0,
-              border: '1px solid #2a2a2a',
-            }}>
+            <div style={{ width: 40, height: 40, borderRadius: 8, overflow: 'hidden', flexShrink: 0, border: '1px solid #2a2a2a' }}>
               <img
                 src={`/order/${format}/classic.${format === 'solo' ? 'png' : 'jpg'}`}
                 alt=""
@@ -198,40 +202,77 @@ function UploadFlow() {
         {step === 'upload' && (
           <div>
             <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 6px', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-              Upload your eye photo
+              Upload {eyeCount === 1 ? 'your eye photo' : `${eyeCount} eye photos`}
             </h1>
-            <p style={{ color: '#555', fontSize: 14, margin: '0 0 28px' }}>JPG, PNG, or WebP · max 20 MB · close-up works best</p>
+            <p style={{ color: '#555', fontSize: 14, margin: '0 0 28px' }}>
+              {eyeCount === 1
+                ? 'JPG, PNG, or WebP · max 20 MB · close-up works best'
+                : `One close-up per eye · JPG, PNG, or WebP · max 20 MB each`}
+            </p>
 
             <UploadGuide />
 
-            {!file ? (
-              <div
-                onDrop={onDrop}
-                onDragOver={e => e.preventDefault()}
-                onClick={() => inputRef.current?.click()}
-                style={{
-                  border: '2px dashed #2a2a2a', borderRadius: 20, padding: '56px 24px',
-                  textAlign: 'center', cursor: 'pointer', transition: 'all 200ms ease',
-                  background: '#0f0f0f',
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#C8883A'; (e.currentTarget as HTMLDivElement).style.background = 'rgba(200,136,58,0.04)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#2a2a2a'; (e.currentTarget as HTMLDivElement).style.background = '#0f0f0f' }}
-              >
-                <div style={{ fontSize: 40, marginBottom: 12 }}>📸</div>
-                <p style={{ fontWeight: 600, color: '#fff', marginBottom: 6 }}>Drag & drop your photo here</p>
-                <p style={{ fontSize: 13, color: '#444', margin: 0 }}>or click to browse</p>
-                <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" style={{ display: 'none' }} onChange={e => e.target.files?.[0] && onFileSelect(e.target.files[0])} />
-              </div>
-            ) : (
-              <div>
-                <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid #2a2a2a', marginBottom: 12 }}>
-                  <img src={preview!} alt="Preview" style={{ width: '100%', maxHeight: 320, objectFit: 'cover', display: 'block' }} />
+            {/* Upload slots */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {Array.from({ length: eyeCount }).map((_, idx) => (
+                <div key={idx}>
+                  {eyeCount > 1 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <div style={{
+                        width: 24, height: 24, borderRadius: '50%', background: files[idx] ? '#C8883A' : '#1e1e1e',
+                        border: files[idx] ? 'none' : '1px solid #2a2a2a',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 11, fontWeight: 700, color: files[idx] ? '#0a0a0a' : '#444',
+                        transition: 'all 200ms',
+                      }}>
+                        {files[idx] ? '✓' : idx + 1}
+                      </div>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: files[idx] ? '#fff' : '#555' }}>
+                        {EYE_LABELS[idx] ?? `Eye ${idx + 1}`}
+                      </span>
+                    </div>
+                  )}
+
+                  {!files[idx] ? (
+                    <div
+                      onDrop={e => onDrop(e, idx)}
+                      onDragOver={e => e.preventDefault()}
+                      onClick={() => inputRefs.current[idx]?.click()}
+                      style={{
+                        border: '2px dashed #2a2a2a', borderRadius: 16,
+                        padding: eyeCount === 1 ? '56px 24px' : '28px 24px',
+                        textAlign: 'center', cursor: 'pointer', transition: 'all 200ms ease',
+                        background: '#0f0f0f',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#C8883A'; (e.currentTarget as HTMLDivElement).style.background = 'rgba(200,136,58,0.04)' }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#2a2a2a'; (e.currentTarget as HTMLDivElement).style.background = '#0f0f0f' }}
+                    >
+                      <div style={{ fontSize: eyeCount === 1 ? 40 : 28, marginBottom: 8 }}>📸</div>
+                      <p style={{ fontWeight: 600, color: '#fff', marginBottom: 4, fontSize: eyeCount === 1 ? 15 : 14 }}>
+                        {eyeCount === 1 ? 'Drag & drop your photo here' : `Drop photo of ${EYE_LABELS[idx] ?? `eye ${idx + 1}`}`}
+                      </p>
+                      <p style={{ fontSize: 12, color: '#444', margin: 0 }}>or click to browse</p>
+                      <input
+                        ref={el => { inputRefs.current[idx] = el }}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        style={{ display: 'none' }}
+                        onChange={e => e.target.files?.[0] && onFileSelect(e.target.files[0], idx)}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid #2a2a2a', marginBottom: 6 }}>
+                        <img src={previews[idx]!} alt={`Eye ${idx + 1}`} style={{ width: '100%', maxHeight: eyeCount === 1 ? 320 : 180, objectFit: 'cover', display: 'block' }} />
+                      </div>
+                      <button onClick={() => removeFile(idx)} style={{ background: 'none', border: 'none', color: '#444', fontSize: 12, cursor: 'pointer', padding: 0 }}>
+                        Remove and choose another
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <button onClick={() => { setFile(null); setPreview(null) }} style={{ background: 'none', border: 'none', color: '#444', fontSize: 13, cursor: 'pointer', padding: 0 }}>
-                  Remove and choose another
-                </button>
-              </div>
-            )}
+              ))}
+            </div>
 
             {uploading && (
               <div style={{ marginTop: 20 }}>
@@ -246,16 +287,16 @@ function UploadFlow() {
 
             <button
               onClick={handleUpload}
-              disabled={!file || uploading}
+              disabled={!allFilesSelected || uploading}
               style={{
                 marginTop: 24, width: '100%', padding: '16px', borderRadius: 14, border: 'none',
-                background: !file || uploading ? '#1a1a1a' : 'linear-gradient(135deg,#d4922a,#C8883A)',
-                color: !file || uploading ? '#444' : '#0a0a0a',
-                fontSize: 16, fontWeight: 700, cursor: !file || uploading ? 'not-allowed' : 'pointer',
+                background: !allFilesSelected || uploading ? '#1a1a1a' : 'linear-gradient(135deg,#d4922a,#C8883A)',
+                color: !allFilesSelected || uploading ? '#444' : '#0a0a0a',
+                fontSize: 16, fontWeight: 700, cursor: !allFilesSelected || uploading ? 'not-allowed' : 'pointer',
                 transition: 'all 200ms ease',
               }}
             >
-              {uploading ? 'Uploading…' : 'Upload & continue →'}
+              {uploading ? 'Uploading…' : allFilesSelected ? 'Upload & continue →' : `Add all ${eyeCount} photos to continue`}
             </button>
           </div>
         )}
