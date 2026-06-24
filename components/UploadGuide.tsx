@@ -177,20 +177,39 @@ const EXAMPLES = [
 ]
 
 export default function UploadGuide() {
-  const [hidden, setHidden] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    if (localStorage.getItem('ec_guide_hidden') === 'true') setHidden(true)
+    if (localStorage.getItem('ec_guide_hidden') === 'true') setCollapsed(true)
   }, [])
 
-  const hide = () => {
-    localStorage.setItem('ec_guide_hidden', 'true')
-    setHidden(true)
+  const toggle = () => {
+    const next = !collapsed
+    localStorage.setItem('ec_guide_hidden', next ? 'true' : 'false')
+    setCollapsed(next)
   }
 
-  if (!mounted || hidden) return null
+  if (!mounted) return null
+
+  if (collapsed) {
+    return (
+      <div style={{
+        background: '#111', border: '1px solid #2a2a2a', borderRadius: 12,
+        marginBottom: 32, padding: '12px 20px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#C8883A', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Photo guide</span>
+          <span style={{ fontSize: 12, color: '#444' }}>How to get the perfect shot</span>
+        </div>
+        <button onClick={toggle} style={{ background: 'transparent', border: '1px solid #2a2a2a', borderRadius: 8, padding: '6px 12px', color: '#888', fontSize: 12, cursor: 'pointer' }}>
+          Show ↓
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div style={{
@@ -271,7 +290,7 @@ export default function UploadGuide() {
           <a href="#" style={{ color: '#C8883A', textDecoration: 'none' }}>See video tutorial →</a>
         </span>
         <button
-          onClick={hide}
+          onClick={toggle}
           style={{
             padding: '8px 16px', borderRadius: 8, border: '1px solid #2a2a2a',
             background: 'transparent', color: '#888', fontSize: 13, cursor: 'pointer',
@@ -290,7 +309,7 @@ export default function UploadGuide() {
             el.style.boxShadow = 'none'
           }}
         >
-          Got it, hide guide →
+          Hide guide ↑
         </button>
       </div>
 
