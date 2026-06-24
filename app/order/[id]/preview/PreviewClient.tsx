@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Order } from '@/lib/supabase'
-import { TIERS } from '@/lib/tiers'
+import { FORMATS } from '@/lib/products'
 import { track } from '@/lib/analytics'
 
 const STATUS_MESSAGES: Record<string, { title: string; desc: string }> = {
@@ -30,7 +30,7 @@ export default function PreviewClient({ order }: { order: Order }) {
     }
   }, [])
 
-  const tier = TIERS[order.tier]
+  const fmt = FORMATS.find(f => f.id === (order.tier as string)) ?? { name: order.tier, size: '' }
 
   const handleApprove = async () => {
     setLoading('approve')
@@ -86,7 +86,7 @@ export default function PreviewClient({ order }: { order: Order }) {
         <div className="mb-6">
           <div className="text-sm text-gray-400 mb-1">Order #{order.id.slice(0, 8).toUpperCase()}</div>
           <h1 className="text-3xl font-bold">Your EyeCanvas preview</h1>
-          <p className="text-gray-500 mt-1">{tier.name} — {tier.size} canvas</p>
+          <p className="text-gray-500 mt-1">{fmt.name} — {fmt.size} canvas</p>
         </div>
 
         {error && (
