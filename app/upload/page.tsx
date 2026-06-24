@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { track } from '@/lib/analytics'
 import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/lib/products'
 import type { Format, BgStyle } from '@/lib/products'
-import AddressAutocomplete from '@/components/AddressAutocomplete'
 
 type Step = 'upload' | 'details'
 
@@ -271,11 +270,7 @@ function UploadFlow() {
                 <Field label="Full name" value={info.name} placeholder="Jane Smith" onChange={v => setInfo(i => ({ ...i, name: v }))} />
                 <Field label="Email" type="email" value={info.email} placeholder="jane@example.com" onChange={v => setInfo(i => ({ ...i, email: v }))} />
               </div>
-              <AddressAutocomplete
-                value={info.line1}
-                onChange={v => setInfo(i => ({ ...i, line1: v }))}
-                onSelect={parts => setInfo(i => ({ ...i, ...parts }))}
-              />
+              <Field label="Address" value={info.line1} placeholder="123 Main St" onChange={v => setInfo(i => ({ ...i, line1: v }))} />
               <Field label="Apt, suite, etc. (optional)" value={info.line2} placeholder="Apt 4B" onChange={v => setInfo(i => ({ ...i, line2: v }))} />
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
                 <Field label="City" value={info.city} onChange={v => setInfo(i => ({ ...i, city: v }))} />

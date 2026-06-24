@@ -39,6 +39,21 @@ const TESTIMONIALS = [
     name: "Marcus L.",
     location: "Los Angeles, CA",
   },
+  {
+    quote: "Really straightforward process. Uploaded the photo, got the preview the same day, approved it, and it arrived well packed. Happy with how it turned out.",
+    name: "Daniel K.",
+    location: "Chicago, IL",
+  },
+  {
+    quote: "Got the duo print for my parents. They put it in the living room and it genuinely looks like something from a gallery.",
+    name: "Tom R.",
+    location: "London, UK",
+  },
+  {
+    quote: "I was a little unsure at first but the preview before printing made it easy. Exactly what I wanted.",
+    name: "Elena V.",
+    location: "Toronto, CA",
+  },
 ]
 
 export default function LandingPage() {
@@ -326,30 +341,34 @@ export default function LandingPage() {
           </FadeUp>
 
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
-            {TESTIMONIALS.map((t, i) => (
-              <FadeUp key={t.name} delay={i * 0.12} className="flex">
-                <div className="flex flex-col rounded-2xl overflow-hidden border border-white/8 group w-full" style={{ background: '#111' }}>
-                  {/* Photo — fixed height */}
-                  <div className="relative shrink-0" style={{ height: 220 }}>
-                    <Image src={i === 0 ? '/feedback-1.png' : i === 1 ? '/feedback-2.png' : '/feedback-3.jpg'} alt="Canvas on wall" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(17,17,17,1) 0%, rgba(17,17,17,0.3) 60%, transparent 100%)' }} />
-                  </div>
-                  {/* Quote — grows to fill remaining space */}
-                  <div className="flex flex-col justify-between p-6 pt-4 grow">
-                    <p className="text-white/80 text-sm leading-relaxed italic mb-4">"{t.quote}"</p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0">
-                        <Image src="/iris.svg" alt="" width={32} height={32} className="object-cover" style={{ filter: 'brightness(0.8)' }} />
+            {TESTIMONIALS.map((t, i) => {
+              const photos = ['/feedback-1.png', '/feedback-2.png', '/feedback-3.jpg']
+              const hasPhoto = i < photos.length
+              return (
+                <FadeUp key={t.name} delay={i * 0.1} className="flex">
+                  <div className="flex flex-col rounded-2xl overflow-hidden border border-white/8 group w-full" style={{ background: '#111' }}>
+                    {hasPhoto && (
+                      <div className="relative shrink-0" style={{ height: 220 }}>
+                        <Image src={photos[i]} alt="Canvas on wall" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(17,17,17,1) 0%, rgba(17,17,17,0.3) 60%, transparent 100%)' }} />
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold">{t.name}</p>
-                        <p className="text-xs text-white/40">{t.location}</p>
+                    )}
+                    <div className="flex flex-col justify-between p-6 pt-4 grow" style={{ paddingTop: hasPhoto ? 16 : 24 }}>
+                      <p className="text-white/80 text-sm leading-relaxed italic mb-4">"{t.quote}"</p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0">
+                          <Image src="/iris.svg" alt="" width={32} height={32} className="object-cover" style={{ filter: 'brightness(0.8)' }} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">{t.name}</p>
+                          <p className="text-xs text-white/40">{t.location}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </FadeUp>
-            ))}
+                </FadeUp>
+              )
+            })}
           </div>
         </div>
       </section>
