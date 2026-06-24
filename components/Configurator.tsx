@@ -254,10 +254,13 @@ export default function Configurator({ maxPreviewW = 560 }: { maxPreviewW?: numb
   const fmt = FORMATS.find(f => f.id === format)!
   const total = BASE_PRICES[format] + (bgStyle === 'stardust' ? STARDUST_ADDON : 0)
 
-  useEffect(() => { track('configurator_view') }, [])
+  const interacted = useRef(false)
+  const trackInteraction = () => {
+    if (!interacted.current) { interacted.current = true; track('configurator_view') }
+  }
 
-  const handleFormatSelect = (f: Format) => { setFormat(f) }
-  const handleStyleSelect = (s: BgStyle) => { setBgStyle(s) }
+  const handleFormatSelect = (f: Format) => { trackInteraction(); setFormat(f) }
+  const handleStyleSelect = (s: BgStyle) => { trackInteraction(); setBgStyle(s) }
   const handleStart = () => {
     track('configurator_cta_click', { format, style: bgStyle, price: total })
     router.push(`/upload?format=${format}&style=${bgStyle}`)
