@@ -482,9 +482,36 @@ export default function LandingPage() {
 
       {/* ── FOOTER ───────────────────────────────────────── */}
       <footer className="border-t border-white/8 py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <span className="font-serif text-lg font-bold">Eye<span style={{ color: '#C8883A' }}>Canvas</span></span>
-          <p className="text-white/30 text-sm">© {new Date().getFullYear()} EyeCanvas. All rights reserved.</p>
+          <div className="flex flex-col items-center gap-3">
+            <p className="text-white/30 text-sm">© {new Date().getFullYear()} EyeCanvas. All rights reserved.</p>
+            {/* Payment methods */}
+            <div className="flex items-center gap-3">
+              <span className="text-white/20 text-xs uppercase tracking-wider">Secure payment via</span>
+              {/* Stripe wordmark */}
+              <svg width="44" height="18" viewBox="0 0 44 18" fill="none" style={{ opacity: 0.45 }}>
+                <path d="M5.27 6.77C5.27 5.96 5.94 5.63 7.04 5.63c1.56 0 3.53.47 5.09 1.31V2.21C10.57 1.48 9.02 1.2 7.04 1.2 2.82 1.2 0 3.33 0 7.01c0 5.8 8 4.87 8 7.38 0 .97-.85 1.28-2 1.28-1.74 0-3.97-.72-5.73-1.68v4.78c1.95.85 3.93 1.21 5.73 1.21 4.34 0 7.33-2.07 7.33-5.8-.02-6.25-8.06-5.14-8.06-7.41zM21.5 1.57l-3.06.65-.01 10.04c0 1.85 1.39 3.22 3.25 3.22 1.03 0 1.78-.19 2.2-.42v-3.68c-.4.16-2.37.73-2.37-1.1V6.1h2.37V2.27h-2.37l-.01-.7zM26.57 3.4v11.88h4.08V2.44l-4.08.96zM30.65.76c0-1.14-.89-2-2.06-2s-2.04.86-2.04 2c0 1.13.87 2 2.04 2s2.06-.87 2.06-2zM37.43 6.3c-1.17 0-1.92.55-2.34 1.34l-.16-1.13h-3.62v12.77l4.05-.86.01-3.1c.43.31 1.07.75 2.12.75 2.15 0 4.11-1.68 4.11-5.42C41.6 7.95 39.62 6.3 37.43 6.3zm-.72 8.16c-.7 0-1.13-.25-1.41-.56l-.02-4.37c.31-.35.74-.58 1.43-.58 1.09 0 1.85 1.22 1.85 2.75 0 1.56-.74 2.76-1.85 2.76z" fill="white"/>
+              </svg>
+              {/* Divider */}
+              <span style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.12)' }} />
+              {/* Apple Pay mark */}
+              <svg width="40" height="18" viewBox="0 0 40 18" fill="none" style={{ opacity: 0.45 }}>
+                <path d="M7.3 2.3c-.5.6-1.3 1.1-2.1 1-.1-.8.3-1.7.8-2.2C6.5.5 7.4 0 8.1 0c.1.8-.2 1.7-.8 2.3zm.8 1.2c-1.2-.1-2.2.7-2.8.7-.6 0-1.5-.6-2.4-.6C1.7 3.7.4 4.7 0 6.2c-1 2.9.7 7.1 1.7 9.5.5 1.2 1.1 2.4 2 2.3.8 0 1.1-.5 2.1-.5 1 0 1.3.5 2.1.5.9 0 1.5-1.2 2-2.3.5-1.1.8-2.1.8-2.2-.1 0-1.7-.6-1.7-2.5 0-1.6 1.3-2.4 1.4-2.5-.8-1.1-2-1.3-2.3-1.3zm7.4-1.6v14.3h2.3V12h3.2c2.9 0 4.9-2 4.9-4.9 0-3-1.9-4.9-4.7-4.9h-5.7zm2.3 1.9h2.6c2 0 3.1 1.1 3.1 2.9 0 1.9-1.1 2.9-3.1 2.9h-2.6V3.8zM30 9.6c-1 0-1.8.5-2.2 1.4l-.1-.1V9.7h-2.1v8.5h2.2V14c0-1.5.6-2.4 1.8-2.4.4 0 .7.1.9.2l.4-2.1c-.3-.1-.6-.1-.9-.1zm3.4 8.8c1.1 0 2-.5 2.5-1.3l.1 1.1h2v-5.7c0-2-1.3-3.1-3.4-3.1-1.8 0-3.1.9-3.3 2.4l2.1.2c.1-.6.6-1 1.2-1 .8 0 1.2.4 1.2 1.1v.4l-1.8.1c-1.9.1-2.9.9-2.9 2.4 0 1.5 1 2.4 2.3 2.4zm.6-1.7c-.7 0-1.2-.4-1.2-.9 0-.7.5-1 1.5-1.1l1.4-.1v.4c0 1-.8 1.7-1.7 1.7z" fill="white"/>
+              </svg>
+              {/* Visa */}
+              <svg width="36" height="12" viewBox="0 0 36 12" fill="none" style={{ opacity: 0.38 }}>
+                <path d="M15.2 0L13 12h3.2L18.4 0h-3.2zM25.4 0l-3 7.8-.3-1.6S21 2.3 17.3 0h4.4l1.6 8.2L25.8 0h3.5L24.4 12h-3.3L25.4 0zM11.7 0L8.4 8.1 8 6.5C7.3 4 4.9 1.6 2.2.5L5.2 12h3.3L15 0h-3.3zM2.1 0H.1L0 .7C5 2 8.4 5.1 9.7 9.1L8.1.7C7.8.2 6.9 0 5.6 0H2.1z" fill="#1A1F71"/>
+                <path d="M2.1 0H.1L0 .7C5 2 8.4 5.1 9.7 9.1L8.1.7C7.8.2 6.9 0 5.6 0H2.1z" fill="#F7A600"/>
+              </svg>
+              {/* Mastercard */}
+              <svg width="30" height="18" viewBox="0 0 30 18" fill="none" style={{ opacity: 0.38 }}>
+                <circle cx="10" cy="9" r="9" fill="#EB001B"/>
+                <circle cx="20" cy="9" r="9" fill="#F79E1B"/>
+                <path d="M15 3.5a9 9 0 010 11A9 9 0 0115 3.5z" fill="#FF5F00"/>
+              </svg>
+            </div>
+          </div>
           <div className="flex gap-6 text-sm text-white/30">
             <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
             <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
