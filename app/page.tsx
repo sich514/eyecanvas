@@ -226,13 +226,11 @@ export default function LandingPage() {
                 </p>
                 {/* 18 — amber text button with underline on hover */}
                 <ScrollToPricingBtn
+                  className="hover:underline"
                   style={{
                     color: '#C8883A', background: 'none', border: 'none', cursor: 'pointer',
                     padding: 0, fontSize: 15, fontWeight: 600,
-                    textDecoration: 'none', transition: 'text-decoration 200ms',
                   }}
-                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => (e.currentTarget.style.textDecoration = 'underline')}
-                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => (e.currentTarget.style.textDecoration = 'none')}
                 >
                   See what yours looks like →
                 </ScrollToPricingBtn>
@@ -351,20 +349,8 @@ export default function LandingPage() {
               <FadeUp key={o} delay={i * 0.05}>
                 {/* 6 — occasions hover with amber */}
                 <ScrollToPricingBtn
-                  className="px-5 py-2.5 rounded-full border text-sm transition-all"
-                  style={{
-                    borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)',
-                    background: 'rgba(255,255,255,0.03)', cursor: 'pointer',
-                    transition: 'all 200ms ease',
-                  }}
-                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                    e.currentTarget.style.borderColor = '#C8883A'
-                    e.currentTarget.style.color = '#C8883A'
-                  }}
-                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
-                  }}
+                  className="px-5 py-2.5 rounded-full border text-sm transition-all border-white/10 text-white/60 bg-white/[0.03] hover:border-[#C8883A] hover:text-[#C8883A]"
+                  style={{ cursor: 'pointer' }}
                 >
                   {o}
                 </ScrollToPricingBtn>
