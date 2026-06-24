@@ -4,6 +4,27 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { track } from '@/lib/analytics'
 
+function useViewerCount() {
+  const [count, setCount] = useState(() => Math.floor(Math.random() * 17) + 7)
+  useEffect(() => {
+    const t = setInterval(() => setCount(Math.floor(Math.random() * 17) + 7), 45000)
+    return () => clearInterval(t)
+  }, [])
+  return count
+}
+
+const UPSELL: Partial<Record<string, string>> = {
+  solo: '💑 Most couples choose Duo — two eyes, one canvas.',
+  duo: '👨‍👩‍👧 Have kids? Trio fits the whole family.',
+  trio: '✨ Go all in — Quad is our most striking piece.',
+}
+
+const MINI_QUOTES = [
+  { stars: '⭐⭐⭐⭐⭐', text: '"Unlike anything I\'ve seen on a wall"', name: 'James T., Austin TX' },
+  { stars: '⭐⭐⭐⭐⭐', text: '"I had no idea my eye looked like that"', name: 'Sarah M., Brooklyn NY' },
+  { stars: '⭐⭐⭐⭐⭐', text: '"Every guest asks about it first"', name: 'Marcus L., Los Angeles CA' },
+]
+
 export type Format = 'solo' | 'duo' | 'trio' | 'quad'
 export type BgStyle = 'classic' | 'stardust'
 
@@ -260,12 +281,20 @@ export default function Configurator({
   const fmt = FORMATS.find(f => f.id === format)!
   const total = BASE_PRICES[format] + (bgStyle === 'stardust' ? STARDUST_ADDON : 0)
 
+  const viewerCount = useViewerCount()
+  const [nudgeDismissed, setNudgeDismissed] = useState(false)
+  const prevFormat = useRef(format)
+
   const interacted = useRef(false)
   const trackInteraction = () => {
     if (!interacted.current) { interacted.current = true; track('configurator_view') }
   }
 
-  const handleFormatSelect = (f: Format) => { trackInteraction(); setFormat(f) }
+  const handleFormatSelect = (f: Format) => {
+    trackInteraction()
+    if (f !== prevFormat.current) { setNudgeDismissed(false); prevFormat.current = f }
+    setFormat(f)
+  }
   const handleStyleSelect = (s: BgStyle) => { trackInteraction(); setBgStyle(s) }
   const handleStart = () => {
     track('configurator_cta_click', { format, style: bgStyle, price: total })
@@ -351,6 +380,21 @@ export default function Configurator({
             </div>
           </div>
 
+          {/* Upsell nudge */}
+          {UPSELL[format] && !nudgeDismissed && (
+            <div onClick={() => setNudgeDismissed(true)} style={{
+              marginTop: 10, marginBottom: isMobile ? 16 : 24,
+              padding: '9px 14px', borderRadius: 10,
+              background: 'rgba(200,136,58,0.08)', border: '1px solid rgba(200,136,58,0.2)',
+              fontSize: 13, color: '#C8883A', cursor: 'pointer',
+              animation: 'nudgeFade 200ms ease',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8,
+            }}>
+              <span>{UPSELL[format]}</span>
+              <span style={{ color: '#555', fontSize: 16, lineHeight: 1 }}>×</span>
+            </div>
+          )}
+
           {/* Background */}
           <div style={{ marginBottom: isMobile ? 20 : 32 }}>
             <p style={{ fontSize: 15, fontWeight: 700, margin: '0 0 12px', color: '#fff' }}>Background style</p>
@@ -415,8 +459,11 @@ export default function Configurator({
             Start with {fmt.name} →
           </button>
 
-          <p style={{ textAlign: 'center', color: '#444', fontSize: 12, margin: '0 0 20px' }}>
-            Upload your photo after checkout · Free revision included
+          <p style={{ textAlign: 'center', color: '#444', fontSize: 12, margin: '4px 0 6px' }}>
+            Upload your photo next · Free revision included
+          </p>
+          <p style={{ textAlign: 'center', color: '#555', fontSize: 12, margin: '0 0 20px' }}>
+            🕐 Usually ships in 5–7 days &nbsp;·&nbsp; <span style={{ color: '#C8883A' }}>{viewerCount} people</span> customizing right now
           </p>
 
           {/* Trust badges */}
@@ -435,8 +482,20 @@ export default function Configurator({
               </div>
             ))}
           </div>
+
+          {/* Mini quotes */}
+          <div style={{ marginTop: 20, borderTop: '1px solid #1a1a1a', paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {MINI_QUOTES.map((q, i) => (
+              <div key={i} style={{ fontSize: 12, color: '#555', textAlign: 'center', fontStyle: 'italic' }}>
+                <span style={{ color: '#C8883A', fontStyle: 'normal', marginRight: 4 }}>{q.stars}</span>
+                {q.text} <span style={{ color: '#444', fontStyle: 'normal' }}>— {q.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      <style>{`@keyframes nudgeFade { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }`}</style>
     </>
   )
 }

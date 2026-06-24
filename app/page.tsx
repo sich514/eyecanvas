@@ -6,6 +6,7 @@ import AccordionItem from '@/components/AccordionItem'
 import InlineOrderFlow from '@/components/InlineOrderFlow'
 import PageTracker from '@/components/PageTracker'
 import ScrollToPricingBtn from '@/components/ScrollToPricingBtn'
+import PhotoLightbox from '@/components/PhotoLightbox'
 
 const OCCASIONS = ["Valentine's Day", "New Baby", "Wedding Gift", "Anniversary", "Mother's Day", "Just Because", "Birthday", "Graduation"]
 
@@ -21,6 +22,18 @@ const FAQS = [
   {
     q: "What if I don't like how it looks?",
     a: "Every order includes a free revision before we print a single thing. You see the AI-enhanced preview first and can request changes — colour, contrast, crop — before you approve. We don't touch the press until you say go.",
+  },
+  {
+    q: "Do you ship across the US?",
+    a: "Yes — free tracked shipping to all 50 states. Arrives 5–7 business days after you approve your preview.",
+  },
+  {
+    q: "Can I send it as a gift to a different address?",
+    a: "Absolutely. Enter the recipient's address at checkout. We ship directly to them with no pricing info in the package.",
+  },
+  {
+    q: "What is the Stardust effect?",
+    a: "Stardust adds AI-generated golden light particles around your iris — like your eye is at the center of a galaxy. Our most popular upgrade at +$30.",
   },
 ]
 
@@ -57,6 +70,14 @@ const TESTIMONIALS = [
   },
 ]
 
+const TRUST_ITEMS = [
+  { icon: '🔒', label: 'Secure checkout' },
+  { icon: '🎨', label: 'Free AI enhancement' },
+  { icon: '✏️', label: 'Free revision before printing' },
+  { icon: '🚚', label: 'Free US shipping' },
+  { icon: '⭐', label: '5-star rated' },
+]
+
 export default function LandingPage() {
   return (
     <div className="bg-[#0a0a0a] text-white overflow-x-hidden">
@@ -83,7 +104,6 @@ export default function LandingPage() {
 
       {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative w-full h-screen min-h-[600px] flex flex-col items-center justify-center overflow-hidden">
-        {/* Full-bleed iris background */}
         <div className="absolute inset-0">
           <Image
             src="/iris-hero.jpg"
@@ -93,30 +113,29 @@ export default function LandingPage() {
             className="object-cover"
             style={{ objectPosition: 'center' }}
           />
-          {/* Dark overlay */}
           <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.48)' }} />
-          {/* Radial vignette — darker at edges */}
           <div className="absolute inset-0" style={{
             background: 'radial-gradient(ellipse 70% 70% at 50% 50%, transparent 20%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.88) 100%)'
           }} />
         </div>
 
-        {/* Hero content */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-6 tracking-tight">
             Your eye is<br />
             <span style={{ color: '#C8883A' }}>a universe.</span>
           </h1>
-          <p className="text-lg md:text-2xl text-white/75 mb-10 font-light tracking-wide">
-            Turn it into fine art.
+          {/* 17 — updated subtext */}
+          <p className="text-lg md:text-xl text-white/75 mb-10 font-light tracking-wide max-w-xl mx-auto">
+            We reveal details invisible to the naked eye — then print them at gallery scale.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            {/* 1 — from $99 */}
             <ScrollToPricingBtn
               className="w-full sm:w-auto px-8 py-4 rounded-full font-semibold text-base text-[#0a0a0a] shadow-lg transition-all hover:brightness-110 hover:scale-[1.02]"
               style={{ background: '#C8883A', boxShadow: '0 0 40px rgba(200,136,58,0.4)', border: 'none', cursor: 'pointer' }}
             >
-              Create Mine — from $79
+              Create Mine — from $99
             </ScrollToPricingBtn>
             <ScrollToPricingBtn
               className="w-full sm:w-auto px-8 py-4 rounded-full font-semibold text-base text-white border border-white/40 backdrop-blur-sm hover:bg-white/10 transition-all"
@@ -126,14 +145,13 @@ export default function LandingPage() {
             </ScrollToPricingBtn>
           </div>
 
-          {/* Social proof */}
+          {/* 2 — social proof text updated */}
           <div className="flex items-center justify-center gap-2 text-sm text-white/60">
             <span style={{ color: '#C8883A' }}>★★★★★</span>
-            <span>1,100+ portraits printed</span>
+            <span>Loved by customers across the US</span>
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30">
           <span className="text-xs tracking-widest uppercase">Scroll</span>
           <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
@@ -143,21 +161,31 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* 11 — TRUST BAR */}
+      <div style={{ background: '#111', borderTop: '1px solid #1a1a1a', borderBottom: '1px solid #1a1a1a', padding: '14px 24px' }}>
+        <div className="max-w-5xl mx-auto" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+          {TRUST_ITEMS.map(item => (
+            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
+              <span style={{ color: '#C8883A', fontSize: 14 }}>{item.icon}</span>
+              <span style={{ fontSize: 13, color: '#888' }}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── EMOTIONAL HOOK ───────────────────────────────── */}
       <section className="py-24 md:py-32 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-            {/* Before / after visual */}
             <FadeUp>
               <div className="relative">
-                {/* Phone mock → Canvas mock */}
                 <div className="grid grid-cols-2 gap-4 items-end">
-                  {/* Blurry "phone photo" side */}
                   <div className="relative rounded-2xl overflow-hidden aspect-square border border-white/10">
                     <Image
                       src="/iris-blur.png"
                       alt="Original phone photo"
                       fill
+                      loading="lazy"
                       className="object-cover"
                       style={{ filter: 'blur(3px) brightness(0.5) saturate(0.3)' }}
                     />
@@ -165,13 +193,13 @@ export default function LandingPage() {
                       <span className="text-xs font-semibold text-white/50 bg-black/50 px-2 py-1 rounded-full tracking-wider">YOUR PHOTO</span>
                     </div>
                   </div>
-                  {/* Large canvas side */}
                   <div className="relative rounded-2xl overflow-hidden aspect-square border-4 border-white/10 scale-110"
                     style={{ boxShadow: '0 30px 80px rgba(200,136,58,0.2), 0 4px 20px rgba(0,0,0,0.8)' }}>
                     <Image
                       src="/iris-hero.jpg"
                       alt="Canvas print result"
                       fill
+                      loading="lazy"
                       className="object-cover"
                       style={{ filter: 'brightness(1.1) saturate(1.5) contrast(1.1)' }}
                     />
@@ -184,7 +212,6 @@ export default function LandingPage() {
               </div>
             </FadeUp>
 
-            {/* Copy */}
             <FadeUp delay={0.15}>
               <div>
                 <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6 leading-tight">
@@ -197,9 +224,15 @@ export default function LandingPage() {
                 <p className="text-white/60 text-lg leading-relaxed mb-10">
                   Then we print them at gallery scale.
                 </p>
+                {/* 18 — amber text button with underline on hover */}
                 <ScrollToPricingBtn
-                  className="inline-flex items-center gap-2 font-semibold text-sm transition-colors"
-                  style={{ color: '#C8883A', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                  style={{
+                    color: '#C8883A', background: 'none', border: 'none', cursor: 'pointer',
+                    padding: 0, fontSize: 15, fontWeight: 600,
+                    textDecoration: 'none', transition: 'text-decoration 200ms',
+                  }}
+                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => (e.currentTarget.style.textDecoration = 'underline')}
+                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => (e.currentTarget.style.textDecoration = 'none')}
                 >
                   See what yours looks like →
                 </ScrollToPricingBtn>
@@ -207,26 +240,9 @@ export default function LandingPage() {
             </FadeUp>
           </div>
 
-          {/* Wall photos grid */}
+          {/* 13 — Photo gallery with lightbox */}
           <FadeUp delay={0.1}>
-            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                '/Home-Design-©-Iris-Galerie-13-scaled.avif',
-                '/Home-Design-©-Iris-Galerie-16-scaled.avif',
-                '/Home-Design-©-Iris-Galerie-2.avif',
-                '/Home-Design-©-Iris-Galerie-6-scaled.avif',
-              ].map((src) => (
-                <div key={src} className="relative overflow-hidden rounded-2xl border border-white/8 group aspect-[3/4]">
-                  <Image
-                    src={src}
-                    alt="Canvas print on wall"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
-                </div>
-              ))}
-            </div>
+            <PhotoLightbox />
           </FadeUp>
         </div>
       </section>
@@ -247,16 +263,19 @@ export default function LandingPage() {
                 n: '01',
                 title: 'Snap a close-up',
                 desc: "Any smartphone works. Tap your eye to focus, hold still for 2 seconds. That's it — we handle everything else.",
+                extra: null,
               },
               {
                 n: '02',
                 title: 'We enhance with AI',
                 desc: 'Our model upscales your photo 4× and reveals microscopic detail — hidden fibers, colour gradients, depth — that prints stunningly at 24 inches.',
+                extra: null,
               },
               {
                 n: '03',
                 title: 'Arrives gift-ready',
                 desc: 'Gallery-wrapped canvas on a solid frame, packed in a luxury box with a hanging kit. Ships in 5–7 days. Free.',
+                extra: 'Every order includes a hanging kit. Ready to give.',
               },
             ].map((step, i) => (
               <FadeUp key={step.n} delay={i * 0.12}>
@@ -267,6 +286,8 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
                   <p className="text-white/50 text-sm leading-relaxed">{step.desc}</p>
+                  {/* 19 — extra line for step 03 */}
+                  {step.extra && <p className="text-white/40 text-sm mt-3 italic">{step.extra}</p>}
                 </div>
               </FadeUp>
             ))}
@@ -286,9 +307,16 @@ export default function LandingPage() {
                 <p className="text-white/55 leading-relaxed mb-4">
                   Real-ESRGAN upscales your photo to 4× its original resolution — then sharpens every fiber, every colour shift, every microscopic detail.
                 </p>
-                <p className="text-white/55 leading-relaxed">
+                <p className="text-white/55 leading-relaxed mb-8">
                   The result is a file so sharp it prints perfectly at 24 inches. Museum quality. From your phone.
                 </p>
+                {/* 12 — CTA below slider */}
+                <ScrollToPricingBtn
+                  className="w-full md:w-auto px-8 py-4 rounded-full font-bold text-base text-[#0a0a0a] transition-all hover:brightness-110"
+                  style={{ background: '#C8883A', border: 'none', cursor: 'pointer', display: 'block', textAlign: 'center' }}
+                >
+                  See what MY eye looks like →
+                </ScrollToPricingBtn>
               </div>
             </div>
           </FadeUp>
@@ -302,7 +330,8 @@ export default function LandingPage() {
             <div className="text-center mb-16">
               <p className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: '#C8883A' }}>Build yours</p>
               <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">Choose your canvas</h2>
-              <p className="text-white/50">Every size includes AI enhancement, free revision, and tracked shipping.</p>
+              {/* 20 — emotional subtext */}
+              <p className="text-white/50">Every canvas is unique. Yours will never exist again.</p>
             </div>
           </FadeUp>
           <FadeUp delay={0.1}>
@@ -320,9 +349,22 @@ export default function LandingPage() {
           <div className="flex flex-wrap justify-center gap-3">
             {OCCASIONS.map((o, i) => (
               <FadeUp key={o} delay={i * 0.05}>
+                {/* 6 — occasions hover with amber */}
                 <ScrollToPricingBtn
-                  className="px-5 py-2.5 rounded-full border border-white/10 text-sm text-white/60 hover:text-[#C8883A] hover:border-[#C8883A]/40 transition-all"
-                  style={{ background: 'rgba(255,255,255,0.03)', cursor: 'pointer' }}
+                  className="px-5 py-2.5 rounded-full border text-sm transition-all"
+                  style={{
+                    borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)',
+                    background: 'rgba(255,255,255,0.03)', cursor: 'pointer',
+                    transition: 'all 200ms ease',
+                  }}
+                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.currentTarget.style.borderColor = '#C8883A'
+                    e.currentTarget.style.color = '#C8883A'
+                  }}
+                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
+                  }}
                 >
                   {o}
                 </ScrollToPricingBtn>
@@ -346,20 +388,38 @@ export default function LandingPage() {
             {TESTIMONIALS.map((t, i) => {
               const photos = ['/feedback-1.png', '/feedback-2.png', '/feedback-3.jpg', '/feedback-4.jpeg', '/feedback-6.jpeg', '/feedback-5.png']
               const hasPhoto = i < photos.length
+              // 4 — Elena V. (index 5) gets gradient + iris SVG
+              const isElena = i === 5
+
               return (
                 <FadeUp key={t.name} delay={i * 0.1} className="flex">
-                  <div className="flex flex-col rounded-2xl overflow-hidden border border-white/8 group w-full" style={{ background: '#111' }}>
-                    {hasPhoto && (
+                  <div className="flex flex-col rounded-2xl overflow-hidden border border-white/8 group w-full"
+                    style={{ background: isElena ? 'linear-gradient(135deg, #1c0e00 0%, #0d0d0d 100%)' : '#111' }}>
+                    {hasPhoto && !isElena && (
                       <div className="relative shrink-0" style={{ height: 220 }}>
-                        <Image src={photos[i]} alt="Canvas on wall" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <Image src={photos[i]} alt="Canvas on wall" fill loading="lazy" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(17,17,17,1) 0%, rgba(17,17,17,0.3) 60%, transparent 100%)' }} />
                       </div>
                     )}
-                    <div className="flex flex-col justify-between p-6 pt-4 grow" style={{ paddingTop: hasPhoto ? 16 : 24 }}>
+                    {isElena && (
+                      <div className="relative shrink-0 flex items-center justify-center" style={{ height: 220 }}>
+                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" opacity="0.25">
+                          <circle cx="30" cy="30" r="28" stroke="#C8883A" strokeWidth="1.5"/>
+                          <circle cx="30" cy="30" r="20" stroke="#C8883A" strokeWidth="1"/>
+                          {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, di) => {
+                            const r = deg * Math.PI / 180
+                            return <line key={di} x1={30+9*Math.cos(r)} y1={30+9*Math.sin(r)} x2={30+20*Math.cos(r)} y2={30+20*Math.sin(r)} stroke="#C8883A" strokeWidth="0.8"/>
+                          })}
+                          <circle cx="30" cy="30" r="7" fill="#1a0f00" stroke="#C8883A" strokeWidth="1"/>
+                          <circle cx="33" cy="27" r="2" fill="#fff" opacity="0.4"/>
+                        </svg>
+                      </div>
+                    )}
+                    <div className="flex flex-col justify-between p-6 pt-4 grow" style={{ paddingTop: (hasPhoto || isElena) ? 16 : 24 }}>
                       <p className="text-white/80 text-sm leading-relaxed italic mb-4">"{t.quote}"</p>
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0">
-                          <Image src="/iris.svg" alt="" width={32} height={32} className="object-cover" style={{ filter: 'brightness(0.8)' }} />
+                          <Image src="/iris.svg" alt="" width={32} height={32} loading="lazy" className="object-cover" style={{ filter: 'brightness(0.8)' }} />
                         </div>
                         <div>
                           <p className="text-sm font-semibold">{t.name}</p>
@@ -396,9 +456,8 @@ export default function LandingPage() {
 
       {/* ── FOOTER CTA ───────────────────────────────────── */}
       <section className="relative py-32 px-6 overflow-hidden">
-        {/* Iris background, very dark */}
         <div className="absolute inset-0">
-          <Image src="/iris.svg" alt="" fill className="object-cover opacity-20" style={{ filter: 'blur(2px) saturate(0.8)' }} />
+          <Image src="/iris.svg" alt="" fill loading="lazy" className="object-cover opacity-20" style={{ filter: 'blur(2px) saturate(0.8)' }} />
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.92) 100%)' }} />
         </div>
 

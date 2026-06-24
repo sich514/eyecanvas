@@ -1,17 +1,14 @@
 'use client'
 
-interface Props {
-  className?: string
-  style?: React.CSSProperties
-  children: React.ReactNode
-}
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement>
 
-export default function ScrollToPricingBtn({ className, style, children }: Props) {
-  const scroll = () => {
+export default function ScrollToPricingBtn({ onClick, children, ...rest }: Props) {
+  const scroll = (e: React.MouseEvent<HTMLButtonElement>) => {
     document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })
+    onClick?.(e)
   }
   return (
-    <button onClick={scroll} className={className} style={style}>
+    <button onClick={scroll} {...rest}>
       {children}
     </button>
   )

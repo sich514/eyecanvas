@@ -3,6 +3,9 @@ import { Playfair_Display, Inter } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import AnalyticsPixels from '@/components/AnalyticsPixels'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import StickyScrollHeader from '@/components/StickyScrollHeader'
+import ExitIntent from '@/components/ExitIntent'
+import MobileBottomCTA from '@/components/MobileBottomCTA'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -42,7 +45,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${playfair.variable} ${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
         {children}
+        <StickyScrollHeader />
         <WhatsAppButton />
+        <ExitIntent />
+        <MobileBottomCTA />
         <AnalyticsPixels />
       </body>
       {ga4Id && <GoogleAnalytics gaId={ga4Id} />}
