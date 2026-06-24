@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
-import ConsentBanner from '@/components/ConsentBanner'
 import AnalyticsPixels from '@/components/AnalyticsPixels'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import './globals.css'
@@ -30,7 +29,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
         {children}
         <WhatsAppButton />
-        <ConsentBanner />
         <AnalyticsPixels />
       </body>
       {ga4Id && <GoogleAnalytics gaId={ga4Id} />}

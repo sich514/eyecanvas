@@ -1,28 +1,10 @@
 'use client'
 
 import Script from 'next/script'
-import { useEffect } from 'react'
 
 export default function AnalyticsPixels() {
   const metaId = process.env.NEXT_PUBLIC_META_PIXEL_ID
   const ttId = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID
-
-  // Init pixels only after consent
-  useEffect(() => {
-    const consent = localStorage.getItem('ec_consent')
-    if (consent !== 'accepted') return
-
-    if (metaId && typeof (window as any).fbq === 'undefined') {
-      // Manually init if script already loaded but fbq not yet called
-      ;(window as any).fbq?.('init', metaId)
-      ;(window as any).fbq?.('track', 'PageView')
-    }
-  }, [])
-
-  const consent = typeof window !== 'undefined' ? localStorage.getItem('ec_consent') : null
-
-  // Only load pixel scripts if consent given
-  if (consent !== 'accepted') return null
 
   return (
     <>
