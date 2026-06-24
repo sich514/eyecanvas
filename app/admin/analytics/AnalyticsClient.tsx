@@ -61,11 +61,12 @@ export default function AnalyticsClient({ todayEvents, recentEvents }: { todayEv
         </div>
 
         {/* Summary cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
           {[
             { label: 'Total Events', value: todayEvents.length },
             { label: 'Unique Sessions', value: sessions },
             { label: 'Paid Orders', value: counts['checkout_completed'] ?? 0 },
+            { label: 'WhatsApp', value: counts['whatsapp_click'] ?? 0 },
           ].map(c => (
             <div key={c.label} style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 14, padding: '20px 24px' }}>
               <p style={{ margin: 0, color: '#444', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{c.label}</p>

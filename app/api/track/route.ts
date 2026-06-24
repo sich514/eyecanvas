@@ -3,7 +3,7 @@ import { createServiceClient } from '@/lib/supabase'
 
 const ALLOWED = new Set([
   'page_view', 'configurator_view', 'configurator_cta_click',
-  'photo_upload_success', 'checkout_completed',
+  'photo_upload_success', 'checkout_completed', 'whatsapp_click',
 ])
 
 export async function POST(req: NextRequest) {

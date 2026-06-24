@@ -4,6 +4,7 @@ export type EventName =
   | 'configurator_cta_click'
   | 'photo_upload_success'
   | 'checkout_completed'
+  | 'whatsapp_click'
 
 export type EventProps = {
   format?: string
@@ -54,17 +55,19 @@ export function track(event: EventName, props?: EventProps) {
 
   // Meta Pixel
   if (consent === 'accepted' && typeof (window as any).fbq !== 'undefined') {
-    const metaMap: Record<EventName, string> = {
-      page_view: 'PageView',
-      configurator_view: 'ViewContent',
-      configurator_cta_click: 'InitiateCheckout',
-      photo_upload_success: 'AddToCart',
-      checkout_completed: 'Purchase',
-    }
-    if (event === 'checkout_completed' && props?.price) {
-      ;(window as any).fbq('track', 'Purchase', { value: props.price, currency: 'USD' })
-    } else {
-      ;(window as any).fbq('track', metaMap[event])
+    // Skip page_view — pixel fires it itself on init to avoid duplicate
+    if (event !== 'page_view') {
+      if (event === 'checkout_completed' && props?.price) {
+        ;(window as any).fbq('track', 'Purchase', { value: props.price, currency: 'USD' })
+      } else if (event === 'configurator_cta_click') {
+        ;(window as any).fbq('track', 'InitiateCheckout')
+      } else if (event === 'photo_upload_success') {
+        ;(window as any).fbq('track', 'AddToCart')
+      } else if (event === 'configurator_view') {
+        ;(window as any).fbq('track', 'ViewContent')
+      } else if (event === 'whatsapp_click') {
+        ;(window as any).fbq('trackCustom', 'WhatsAppClick')
+      }
     }
   }
 
@@ -76,6 +79,7 @@ export function track(event: EventName, props?: EventProps) {
       configurator_cta_click: 'AddToCart',
       photo_upload_success: 'AddToCart',
       checkout_completed: 'CompletePayment',
+      whatsapp_click: 'Contact',
     }
     ;(window as any).ttq.track(ttMap[event], payload)
   }
