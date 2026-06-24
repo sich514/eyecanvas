@@ -15,7 +15,7 @@ export default function StickyScrollHeader() {
 
   return (
     <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 999,
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1100,
       height: 52,
       background: 'rgba(10,10,10,0.95)',
       backdropFilter: 'blur(8px)',

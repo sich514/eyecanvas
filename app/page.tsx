@@ -67,7 +67,7 @@ const FAQS = [
   },
   {
     q: "What is the Stardust effect?",
-    a: "Stardust adds AI-generated golden light particles around your iris — like your eye is at the center of a galaxy. Our most popular upgrade at +$30.",
+    a: "Stardust adds AI-generated golden light particles around your iris — like your eye is at the center of a galaxy. Our artist then hand-picks the colours and intensity to complement your specific eye tone, so no two Stardust pieces look the same. Our most popular upgrade at +$30.",
   },
 ]
 
