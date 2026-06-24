@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { track } from '@/lib/analytics'
 import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/lib/products'
 import type { Format, BgStyle } from '@/lib/products'
+import UploadGuide from '@/components/UploadGuide'
 
 type Step = 'upload' | 'details'
 
@@ -200,6 +201,8 @@ function UploadFlow() {
               Upload your eye photo
             </h1>
             <p style={{ color: '#555', fontSize: 14, margin: '0 0 28px' }}>JPG, PNG, or WebP · max 20 MB · close-up works best</p>
+
+            <UploadGuide />
 
             {!file ? (
               <div
