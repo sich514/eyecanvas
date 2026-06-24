@@ -7,7 +7,7 @@ import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/lib/products'
 import type { Format, BgStyle } from '@/lib/products'
 import { track } from '@/lib/analytics'
 
-type Stage = 'configure' | 'upload' | 'details'
+type Stage = 'upload' | 'details'
 
 const EYE_LABELS = ['Left eye', 'Right eye', 'Third eye', 'Fourth eye']
 const STYLE_LABELS: Record<BgStyle, string> = { classic: 'Classic Black', stardust: 'Stardust Effect' }
@@ -18,7 +18,8 @@ interface CustomerInfo {
 }
 
 export default function InlineOrderFlow() {
-  const [stage, setStage] = useState<Stage>('configure')
+  const [open, setOpen] = useState(false)
+  const [stage, setStage] = useState<Stage>('upload')
   const [format, setFormat] = useState<Format>('solo')
   const [style, setStyle] = useState<BgStyle>('classic')
 
@@ -33,13 +34,22 @@ export default function InlineOrderFlow() {
   const [error, setError] = useState<string | null>(null)
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
-  const uploadSectionRef = useRef<HTMLDivElement>(null)
-  const detailsSectionRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const fmt = FORMATS.find(f => f.id === format) ?? FORMATS[0]
   const eyeCount = fmt.eyes
   const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_ADDON : 0)
   const allFilesSelected = files.every(f => f !== null)
+
+  // Lock body scroll when modal open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [open])
 
   const handleStart = (fmt: Format, sty: BgStyle) => {
     setFormat(fmt)
@@ -50,7 +60,13 @@ export default function InlineOrderFlow() {
     setUploadResults(Array(count).fill(null))
     setError(null)
     setStage('upload')
-    setTimeout(() => uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80)
+    setOpen(true)
+  }
+
+  const close = () => {
+    setOpen(false)
+    setStage('upload')
+    setError(null)
   }
 
   const onFileSelect = useCallback((f: File, idx: number) => {
@@ -93,7 +109,7 @@ export default function InlineOrderFlow() {
       setTimeout(() => {
         setUploading(false)
         setStage('details')
-        setTimeout(() => detailsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80)
+        scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
       }, 400)
     } catch {
       setError('Upload failed. Please try again.')
@@ -128,216 +144,276 @@ export default function InlineOrderFlow() {
   }
 
   return (
-    <div>
-      {/* ── Configurator ── */}
+    <>
       <Configurator onStart={handleStart} />
 
-      {/* ── Upload section (appears after clicking Start) ── */}
-      {(stage === 'upload' || stage === 'details') && (
-        <div ref={uploadSectionRef} style={{ marginTop: 64, scrollMarginTop: 32 }}>
-          <div style={{ borderTop: '1px solid #1e1e1e', paddingTop: 48 }}>
-
-            {/* Order pill */}
+      {/* ── Modal overlay ── */}
+      {open && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) close() }}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1000,
+            background: 'rgba(0,0,0,0.75)',
+            backdropFilter: 'blur(6px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '16px',
+            animation: 'fadeIn 200ms ease',
+          }}
+        >
+          <div
+            ref={scrollRef}
+            style={{
+              background: '#0a0a0a', border: '1px solid #2a2a2a',
+              borderRadius: 20, width: '100%', maxWidth: 560,
+              maxHeight: '90vh', overflowY: 'auto',
+              animation: 'slideUp 250ms cubic-bezier(0.34,1.56,0.64,1)',
+              position: 'relative',
+            }}
+          >
+            {/* Modal header */}
             <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 10,
-              background: '#111', border: '1px solid #2a2a2a', borderRadius: 40,
-              padding: '8px 16px', marginBottom: 28,
+              position: 'sticky', top: 0, zIndex: 10,
+              background: '#0a0a0a', borderBottom: '1px solid #1a1a1a',
+              padding: '16px 20px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
-              <span style={{ fontSize: 12, color: '#555' }}>
-                {fmt.name} · {fmt.size} · {STYLE_LABELS[style]} · <span style={{ color: '#C8883A', fontWeight: 700 }}>${total}</span>
-              </span>
-              <button onClick={() => { setStage('configure'); window.scrollTo({ top: (uploadSectionRef.current?.offsetTop ?? 999) - 200, behavior: 'smooth' }) }}
-                style={{ background: 'none', border: 'none', color: '#555', fontSize: 12, cursor: 'pointer', padding: 0 }}>
-                change ↑
-              </button>
-            </div>
-
-            <h2 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 6px' }}>
-              {stage === 'upload'
-                ? `Upload ${eyeCount === 1 ? 'your eye photo' : `${eyeCount} eye photos`}`
-                : 'Your details'}
-            </h2>
-            <p style={{ color: '#555', fontSize: 14, margin: '0 0 28px' }}>
-              {stage === 'upload'
-                ? eyeCount === 1 ? 'JPG, PNG, or WebP · max 20 MB · close-up works best' : `One close-up per eye · max 20 MB each`
-                : "We'll send your preview and shipping updates here."}
-            </p>
-
-            {error && (
-              <div style={{ marginBottom: 20, padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 12, color: '#f87171', fontSize: 14 }}>
-                {error}
-              </div>
-            )}
-
-            {/* ── UPLOAD STAGE ── */}
-            {stage === 'upload' && (
-              <div style={{ maxWidth: 560 }}>
-                <UploadGuide />
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  {Array.from({ length: eyeCount }).map((_, idx) => (
-                    <div key={idx}>
-                      {eyeCount > 1 && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                          <div style={{
-                            width: 24, height: 24, borderRadius: '50%',
-                            background: files[idx] ? '#C8883A' : '#1e1e1e',
-                            border: files[idx] ? 'none' : '1px solid #2a2a2a',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 11, fontWeight: 700, color: files[idx] ? '#0a0a0a' : '#444',
-                            transition: 'all 200ms',
-                          }}>
-                            {files[idx] ? '✓' : idx + 1}
-                          </div>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: files[idx] ? '#fff' : '#555' }}>
-                            {EYE_LABELS[idx] ?? `Eye ${idx + 1}`}
-                          </span>
-                        </div>
-                      )}
-                      {!files[idx] ? (
-                        <div
-                          onDrop={e => onDrop(e, idx)}
-                          onDragOver={e => e.preventDefault()}
-                          onClick={() => inputRefs.current[idx]?.click()}
-                          style={{
-                            border: '2px dashed #2a2a2a', borderRadius: 16,
-                            padding: eyeCount === 1 ? '56px 24px' : '28px 24px',
-                            textAlign: 'center', cursor: 'pointer', transition: 'all 200ms',
-                            background: '#0f0f0f',
-                          }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#C8883A'; (e.currentTarget as HTMLDivElement).style.background = 'rgba(200,136,58,0.04)' }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#2a2a2a'; (e.currentTarget as HTMLDivElement).style.background = '#0f0f0f' }}
-                        >
-                          <div style={{ fontSize: eyeCount === 1 ? 40 : 28, marginBottom: 8 }}>📸</div>
-                          <p style={{ fontWeight: 600, color: '#fff', marginBottom: 4, fontSize: eyeCount === 1 ? 15 : 14 }}>
-                            {eyeCount === 1 ? 'Drag & drop your photo here' : `Drop photo of ${EYE_LABELS[idx] ?? `eye ${idx + 1}`}`}
-                          </p>
-                          <p style={{ fontSize: 12, color: '#444', margin: 0 }}>or click to browse</p>
-                          <input
-                            ref={el => { inputRefs.current[idx] = el }}
-                            type="file" accept="image/jpeg,image/png,image/webp"
-                            style={{ display: 'none' }}
-                            onChange={e => e.target.files?.[0] && onFileSelect(e.target.files[0], idx)}
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid #2a2a2a', marginBottom: 6 }}>
-                            <img src={previews[idx]!} alt={`Eye ${idx + 1}`} style={{ width: '100%', maxHeight: eyeCount === 1 ? 320 : 180, objectFit: 'cover', display: 'block' }} />
-                          </div>
-                          <button onClick={() => removeFile(idx)} style={{ background: 'none', border: 'none', color: '#444', fontSize: 12, cursor: 'pointer', padding: 0 }}>
-                            Remove and choose another
-                          </button>
-                        </div>
-                      )}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {/* Steps */}
+                  {(['upload', 'details'] as Stage[]).map((s, i) => (
+                    <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{
+                        width: 22, height: 22, borderRadius: '50%',
+                        background: stage === s ? '#C8883A' : i < (['upload','details'] as Stage[]).indexOf(stage) ? '#C8883A' : '#1e1e1e',
+                        border: stage === s || i < (['upload','details'] as Stage[]).indexOf(stage) ? 'none' : '1px solid #2a2a2a',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 10, fontWeight: 700,
+                        color: stage === s || i < (['upload','details'] as Stage[]).indexOf(stage) ? '#0a0a0a' : '#444',
+                        transition: 'all 300ms',
+                      }}>
+                        {i < (['upload','details'] as Stage[]).indexOf(stage) ? '✓' : i + 1}
+                      </div>
+                      {i === 0 && <div style={{ width: 24, height: 2, background: stage === 'details' ? '#C8883A' : '#1e1e1e', borderRadius: 2, transition: 'background 300ms' }} />}
                     </div>
                   ))}
+                  <span style={{ fontSize: 12, color: '#555', marginLeft: 4 }}>
+                    {stage === 'upload' ? 'Upload photo' : 'Your details'}
+                  </span>
                 </div>
-
-                {uploading && (
-                  <div style={{ marginTop: 20 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#555', marginBottom: 8 }}>
-                      <span>Uploading…</span><span>{uploadProgress}%</span>
-                    </div>
-                    <div style={{ height: 4, background: '#1a1a1a', borderRadius: 2, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', background: '#C8883A', borderRadius: 2, width: `${uploadProgress}%`, transition: 'width 300ms ease' }} />
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  onClick={handleUpload}
-                  disabled={!allFilesSelected || uploading}
-                  style={{
-                    marginTop: 24, width: '100%', padding: '16px', borderRadius: 14, border: 'none',
-                    background: !allFilesSelected || uploading ? '#1a1a1a' : 'linear-gradient(135deg,#d4922a,#C8883A)',
-                    color: !allFilesSelected || uploading ? '#444' : '#0a0a0a',
-                    fontSize: 16, fontWeight: 700, cursor: !allFilesSelected || uploading ? 'not-allowed' : 'pointer',
-                    transition: 'all 200ms',
-                  }}
-                >
-                  {uploading ? 'Uploading…' : allFilesSelected ? 'Continue →' : `Add all ${eyeCount} photos to continue`}
-                </button>
+                <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 11, color: '#444' }}>
+                    {fmt.name} · {fmt.size} · {STYLE_LABELS[style]}
+                  </span>
+                  <span style={{ fontSize: 11, color: '#C8883A', fontWeight: 700 }}>${total}</span>
+                  <button onClick={() => close()} style={{ background: 'none', border: 'none', color: '#444', fontSize: 11, cursor: 'pointer', padding: 0 }}>
+                    change
+                  </button>
+                </div>
               </div>
-            )}
+              <button
+                onClick={close}
+                style={{
+                  width: 32, height: 32, borderRadius: '50%', border: '1px solid #2a2a2a',
+                  background: '#111', color: '#888', fontSize: 16, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}
+              >×</button>
+            </div>
 
-            {/* ── DETAILS STAGE ── */}
-            {stage === 'details' && (
-              <div ref={detailsSectionRef} style={{ maxWidth: 560 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    <Field label="Full name" value={info.name} placeholder="Jane Smith" onChange={v => setInfo(i => ({ ...i, name: v }))} />
-                    <Field label="Email" type="email" value={info.email} placeholder="jane@example.com" onChange={v => setInfo(i => ({ ...i, email: v }))} />
-                  </div>
-                  <Field label="Address" value={info.line1} placeholder="123 Main St" onChange={v => setInfo(i => ({ ...i, line1: v }))} />
-                  <Field label="Apt, suite, etc. (optional)" value={info.line2} placeholder="Apt 4B" onChange={v => setInfo(i => ({ ...i, line2: v }))} />
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
-                    <Field label="City" value={info.city} onChange={v => setInfo(i => ({ ...i, city: v }))} />
-                    <Field label="State" value={info.state} onChange={v => setInfo(i => ({ ...i, state: v }))} />
-                    <Field label="ZIP" value={info.postal_code} onChange={v => setInfo(i => ({ ...i, postal_code: v }))} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#888', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Country</label>
-                    <select value={info.country} onChange={e => setInfo(i => ({ ...i, country: e.target.value }))}
-                      style={{ width: '100%', background: '#111', border: '1px solid #2a2a2a', borderRadius: 10, padding: '12px 14px', color: '#fff', fontSize: 14, outline: 'none' }}>
-                      <option value="US">United States</option>
-                      <option value="GB">United Kingdom</option>
-                      <option value="CA">Canada</option>
-                      <option value="AU">Australia</option>
-                      <option value="DE">Germany</option>
-                      <option value="FR">France</option>
-                    </select>
-                  </div>
+            {/* Modal body */}
+            <div style={{ padding: '24px 24px 32px' }}>
+
+              {error && (
+                <div style={{ marginBottom: 16, padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 12, color: '#f87171', fontSize: 14 }}>
+                  {error}
                 </div>
+              )}
 
-                {/* Order summary */}
-                <div style={{ marginTop: 24, padding: '16px', background: '#0f0f0f', border: '1px solid #1e1e1e', borderRadius: 14 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <span style={{ color: '#555', fontSize: 14 }}>{fmt.name} canvas · {fmt.size}</span>
-                    <span style={{ color: '#fff', fontSize: 14 }}>${BASE_PRICES[format]}</span>
+              {/* ── UPLOAD ── */}
+              {stage === 'upload' && (
+                <div>
+                  <h2 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 22, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>
+                    {eyeCount === 1 ? 'Upload your eye photo' : `Upload ${eyeCount} eye photos`}
+                  </h2>
+                  <p style={{ color: '#555', fontSize: 13, margin: '0 0 20px' }}>
+                    {eyeCount === 1 ? 'JPG, PNG, or WebP · max 20 MB · close-up works best' : `One close-up per eye · max 20 MB each`}
+                  </p>
+
+                  <UploadGuide />
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    {Array.from({ length: eyeCount }).map((_, idx) => (
+                      <div key={idx}>
+                        {eyeCount > 1 && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                            <div style={{
+                              width: 22, height: 22, borderRadius: '50%',
+                              background: files[idx] ? '#C8883A' : '#1e1e1e',
+                              border: files[idx] ? 'none' : '1px solid #2a2a2a',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontSize: 10, fontWeight: 700, color: files[idx] ? '#0a0a0a' : '#444',
+                              transition: 'all 200ms',
+                            }}>
+                              {files[idx] ? '✓' : idx + 1}
+                            </div>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: files[idx] ? '#fff' : '#555' }}>
+                              {EYE_LABELS[idx] ?? `Eye ${idx + 1}`}
+                            </span>
+                          </div>
+                        )}
+                        {!files[idx] ? (
+                          <div
+                            onDrop={e => onDrop(e, idx)} onDragOver={e => e.preventDefault()}
+                            onClick={() => inputRefs.current[idx]?.click()}
+                            style={{
+                              border: '2px dashed #2a2a2a', borderRadius: 14,
+                              padding: eyeCount === 1 ? '40px 24px' : '22px 24px',
+                              textAlign: 'center', cursor: 'pointer', transition: 'all 200ms', background: '#0f0f0f',
+                            }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#C8883A'; (e.currentTarget as HTMLDivElement).style.background = 'rgba(200,136,58,0.04)' }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#2a2a2a'; (e.currentTarget as HTMLDivElement).style.background = '#0f0f0f' }}
+                          >
+                            <div style={{ fontSize: eyeCount === 1 ? 36 : 24, marginBottom: 8 }}>📸</div>
+                            <p style={{ fontWeight: 600, color: '#fff', marginBottom: 4, fontSize: 14 }}>
+                              {eyeCount === 1 ? 'Drag & drop or click to browse' : `Drop photo of ${EYE_LABELS[idx] ?? `eye ${idx + 1}`}`}
+                            </p>
+                            <p style={{ fontSize: 12, color: '#444', margin: 0 }}>JPG, PNG, WebP · max 20 MB</p>
+                            <input
+                              ref={el => { inputRefs.current[idx] = el }}
+                              type="file" accept="image/jpeg,image/png,image/webp"
+                              style={{ display: 'none' }}
+                              onChange={e => e.target.files?.[0] && onFileSelect(e.target.files[0], idx)}
+                            />
+                          </div>
+                        ) : (
+                          <div>
+                            <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #2a2a2a', marginBottom: 6 }}>
+                              <img src={previews[idx]!} alt={`Eye ${idx + 1}`} style={{ width: '100%', maxHeight: eyeCount === 1 ? 260 : 160, objectFit: 'cover', display: 'block' }} />
+                            </div>
+                            <button onClick={() => removeFile(idx)} style={{ background: 'none', border: 'none', color: '#444', fontSize: 12, cursor: 'pointer', padding: 0 }}>
+                              Remove and choose another
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  {style === 'stardust' && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <span style={{ color: '#555', fontSize: 14 }}>Stardust Effect</span>
-                      <span style={{ color: '#C8883A', fontSize: 14 }}>+${STARDUST_ADDON}</span>
+
+                  {uploading && (
+                    <div style={{ marginTop: 16 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#555', marginBottom: 6 }}>
+                        <span>Uploading…</span><span>{uploadProgress}%</span>
+                      </div>
+                      <div style={{ height: 4, background: '#1a1a1a', borderRadius: 2, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', background: '#C8883A', borderRadius: 2, width: `${uploadProgress}%`, transition: 'width 300ms ease' }} />
+                      </div>
                     </div>
                   )}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <span style={{ color: '#555', fontSize: 14 }}>Shipping</span>
-                    <span style={{ color: '#4ade80', fontSize: 14 }}>Free</span>
-                  </div>
-                  <div style={{ borderTop: '1px solid #1e1e1e', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 700, fontSize: 15, color: '#fff' }}>Total</span>
-                    <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 24, fontWeight: 700, color: '#C8883A' }}>${total}</span>
-                  </div>
-                </div>
 
-                <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
-                  <button onClick={() => { setStage('upload'); setTimeout(() => uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }}
-                    style={{ flex: '0 0 auto', padding: '16px 20px', borderRadius: 14, border: '1px solid #2a2a2a', background: 'transparent', color: '#555', fontSize: 15, cursor: 'pointer' }}>
-                    ← Back
-                  </button>
                   <button
-                    onClick={handleCheckout}
-                    disabled={checkingOut || !info.name || !info.email || !info.line1 || !info.city || !info.postal_code}
+                    onClick={handleUpload}
+                    disabled={!allFilesSelected || uploading}
                     style={{
-                      flex: 1, padding: '16px', borderRadius: 14, border: 'none',
-                      background: 'linear-gradient(135deg,#d4922a,#C8883A)',
-                      color: '#0a0a0a', fontSize: 16, fontWeight: 700, cursor: 'pointer',
-                      opacity: checkingOut || !info.name || !info.email || !info.line1 || !info.city || !info.postal_code ? 0.5 : 1,
-                      transition: 'opacity 200ms',
+                      marginTop: 20, width: '100%', padding: '15px', borderRadius: 14, border: 'none',
+                      background: !allFilesSelected || uploading ? '#1a1a1a' : 'linear-gradient(135deg,#d4922a,#C8883A)',
+                      color: !allFilesSelected || uploading ? '#444' : '#0a0a0a',
+                      fontSize: 15, fontWeight: 700, cursor: !allFilesSelected || uploading ? 'not-allowed' : 'pointer',
+                      transition: 'all 200ms',
                     }}
                   >
-                    {checkingOut ? 'Redirecting to payment…' : `Pay $${total} →`}
+                    {uploading ? 'Uploading…' : allFilesSelected ? 'Continue →' : `Add ${eyeCount === 1 ? 'a' : 'all'} photo${eyeCount > 1 ? 's' : ''} to continue`}
                   </button>
                 </div>
-                <p style={{ textAlign: 'center', color: '#333', fontSize: 12, marginTop: 12 }}>🔒 Secure checkout via Stripe</p>
-              </div>
-            )}
+              )}
+
+              {/* ── DETAILS ── */}
+              {stage === 'details' && (
+                <div>
+                  <h2 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 22, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>
+                    Your details
+                  </h2>
+                  <p style={{ color: '#555', fontSize: 13, margin: '0 0 20px' }}>We'll send your preview and shipping updates here.</p>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      <Field label="Full name" value={info.name} placeholder="Jane Smith" onChange={v => setInfo(i => ({ ...i, name: v }))} />
+                      <Field label="Email" type="email" value={info.email} placeholder="jane@example.com" onChange={v => setInfo(i => ({ ...i, email: v }))} />
+                    </div>
+                    <Field label="Address" value={info.line1} placeholder="123 Main St" onChange={v => setInfo(i => ({ ...i, line1: v }))} />
+                    <Field label="Apt, suite (optional)" value={info.line2} placeholder="Apt 4B" onChange={v => setInfo(i => ({ ...i, line2: v }))} />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+                      <Field label="City" value={info.city} onChange={v => setInfo(i => ({ ...i, city: v }))} />
+                      <Field label="State" value={info.state} onChange={v => setInfo(i => ({ ...i, state: v }))} />
+                      <Field label="ZIP" value={info.postal_code} onChange={v => setInfo(i => ({ ...i, postal_code: v }))} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Country</label>
+                      <select value={info.country} onChange={e => setInfo(i => ({ ...i, country: e.target.value }))}
+                        style={{ width: '100%', background: '#111', border: '1px solid #2a2a2a', borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 14, outline: 'none' }}>
+                        <option value="US">United States</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Order summary */}
+                  <div style={{ marginTop: 20, padding: '14px 16px', background: '#0f0f0f', border: '1px solid #1e1e1e', borderRadius: 14 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <span style={{ color: '#555', fontSize: 13 }}>{fmt.name} · {fmt.size}</span>
+                      <span style={{ color: '#fff', fontSize: 13 }}>${BASE_PRICES[format]}</span>
+                    </div>
+                    {style === 'stardust' && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ color: '#555', fontSize: 13 }}>Stardust Effect</span>
+                        <span style={{ color: '#C8883A', fontSize: 13 }}>+${STARDUST_ADDON}</span>
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <span style={{ color: '#555', fontSize: 13 }}>Shipping</span>
+                      <span style={{ color: '#4ade80', fontSize: 13 }}>Free</span>
+                    </div>
+                    <div style={{ borderTop: '1px solid #1e1e1e', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: '#fff' }}>Total</span>
+                      <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 22, fontWeight: 700, color: '#C8883A' }}>${total}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                    <button onClick={() => { setStage('upload'); scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                      style={{ flex: '0 0 auto', padding: '14px 18px', borderRadius: 12, border: '1px solid #2a2a2a', background: 'transparent', color: '#555', fontSize: 14, cursor: 'pointer' }}>
+                      ← Back
+                    </button>
+                    <button
+                      onClick={handleCheckout}
+                      disabled={checkingOut || !info.name || !info.email || !info.line1 || !info.city || !info.postal_code}
+                      style={{
+                        flex: 1, padding: '14px', borderRadius: 12, border: 'none',
+                        background: 'linear-gradient(135deg,#d4922a,#C8883A)',
+                        color: '#0a0a0a', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                        opacity: checkingOut || !info.name || !info.email || !info.line1 || !info.city || !info.postal_code ? 0.5 : 1,
+                        transition: 'opacity 200ms',
+                      }}
+                    >
+                      {checkingOut ? 'Redirecting…' : `Pay $${total} →`}
+                    </button>
+                  </div>
+                  <p style={{ textAlign: 'center', color: '#333', fontSize: 11, marginTop: 10 }}>🔒 Secure checkout via Stripe</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
-    </div>
+
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(24px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
+      `}</style>
+    </>
   )
 }
 
@@ -346,10 +422,10 @@ function Field({ label, value, onChange, placeholder, type = 'text' }: {
 }) {
   return (
     <div>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#888', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>
       <input
         type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-        style={{ width: '100%', background: '#111', border: '1px solid #2a2a2a', borderRadius: 10, padding: '12px 14px', color: '#fff', fontSize: 14, outline: 'none', boxSizing: 'border-box', transition: 'border-color 200ms' }}
+        style={{ width: '100%', background: '#111', border: '1px solid #2a2a2a', borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 14, outline: 'none', boxSizing: 'border-box', transition: 'border-color 200ms' }}
         onFocus={e => (e.target as HTMLInputElement).style.borderColor = '#C8883A'}
         onBlur={e => (e.target as HTMLInputElement).style.borderColor = '#2a2a2a'}
       />
