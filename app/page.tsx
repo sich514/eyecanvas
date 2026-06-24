@@ -342,7 +342,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
             {TESTIMONIALS.map((t, i) => {
-              const photos = ['/feedback-1.png', '/feedback-2.png', '/feedback-3.jpg', '/feedback-4.jpeg', '/feedback-5.png']
+              const photos = ['/feedback-1.png', '/feedback-2.png', '/feedback-3.jpg', '/feedback-4.jpeg', '/feedback-6.jpeg', '/feedback-5.png']
               const hasPhoto = i < photos.length
               return (
                 <FadeUp key={t.name} delay={i * 0.1} className="flex">
