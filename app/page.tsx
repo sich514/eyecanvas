@@ -71,7 +71,7 @@ export default function LandingPage() {
         <div className="flex items-center gap-6">
           <a href="#how-it-works" className="hidden md:block text-sm text-white/60 hover:text-white transition-colors">How it works</a>
           <a href="#pricing" className="hidden md:block text-sm text-white/60 hover:text-white transition-colors">Pricing</a>
-          <Link href="/order"
+          <Link href="#pricing"
             className="px-5 py-2.5 rounded-full text-sm font-semibold text-[#0a0a0a] transition-all hover:brightness-110"
             style={{ background: '#C8883A' }}
           >
@@ -111,13 +111,13 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <Link href="/order"
+            <Link href="#pricing"
               className="w-full sm:w-auto px-8 py-4 rounded-full font-semibold text-base text-[#0a0a0a] shadow-lg transition-all hover:brightness-110 hover:scale-[1.02]"
               style={{ background: '#C8883A', boxShadow: '0 0 40px rgba(200,136,58,0.4)' }}
             >
               Create Mine — from $79
             </Link>
-            <Link href="/order"
+            <Link href="#pricing"
               className="w-full sm:w-auto px-8 py-4 rounded-full font-semibold text-base text-white border border-white/40 backdrop-blur-sm hover:bg-white/10 transition-all"
             >
               Give as a Gift
@@ -195,7 +195,7 @@ export default function LandingPage() {
                 <p className="text-white/60 text-lg leading-relaxed mb-10">
                   Then we print them at gallery scale.
                 </p>
-                <Link href="/order"
+                <Link href="#pricing"
                   className="inline-flex items-center gap-2 font-semibold text-sm transition-colors"
                   style={{ color: '#C8883A' }}
                 >
@@ -318,7 +318,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap justify-center gap-3">
             {OCCASIONS.map((o, i) => (
               <FadeUp key={o} delay={i * 0.05}>
-                <Link href="/order"
+                <Link href="#pricing"
                   className="px-5 py-2.5 rounded-full border border-white/10 text-sm text-white/60 hover:text-[#C8883A] hover:border-[#C8883A]/40 transition-all"
                   style={{ background: 'rgba(255,255,255,0.03)' }}
                 >
@@ -408,7 +408,7 @@ export default function LandingPage() {
             <p className="text-white/55 text-lg mb-10">
               What does yours look like at 24 inches?
             </p>
-            <Link href="/order"
+            <Link href="#pricing"
               className="inline-block px-10 py-5 rounded-full font-bold text-lg text-[#0a0a0a] transition-all hover:brightness-110 hover:scale-105"
               style={{ background: '#C8883A', boxShadow: '0 0 60px rgba(200,136,58,0.35)' }}
             >
