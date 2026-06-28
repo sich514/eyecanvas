@@ -1,20 +1,20 @@
+import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase'
-import AnalyticsClient from './AnalyticsClient'
 
-export default async function AnalyticsPage() {
+export async function GET(req: NextRequest) {
   const cookieStore = await cookies()
   const auth = cookieStore.get('admin_auth')?.value
-  if (auth !== process.env.ADMIN_PASSWORD) redirect('/admin/login')
+  if (auth !== process.env.ADMIN_PASSWORD) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const supabase = createServiceClient()
-
   const { data: events } = await supabase
     .from('analytics_events')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(5000)
 
-  return <AnalyticsClient events={events ?? []} />
+  return NextResponse.json({ events: events ?? [] })
 }

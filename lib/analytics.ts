@@ -28,8 +28,33 @@ function getUTM(param: string): string | null {
   return localStorage.getItem(`ec_${param}`)
 }
 
+function getDeviceType(): string {
+  if (/Mobi|Android/i.test(navigator.userAgent)) return 'mobile'
+  if (window.innerWidth < 1024) return 'tablet'
+  return 'desktop'
+}
+
+function getGeo(): Record<string, string> {
+  try { return JSON.parse(sessionStorage.getItem('ec_geo') || '{}') } catch { return {} }
+}
+
+function initGeo(): void {
+  if (sessionStorage.getItem('ec_geo_fetched')) return
+  sessionStorage.setItem('ec_geo_fetched', '1')
+  fetch('https://ipapi.co/json/')
+    .then(r => r.json())
+    .then(d => sessionStorage.setItem('ec_geo', JSON.stringify({
+      country: d.country_code ?? '',
+      region: d.region ?? '',
+      city: d.city ?? '',
+    })))
+    .catch(() => {})
+}
+
 export function track(event: EventName, props?: EventProps) {
   if (typeof window === 'undefined') return
+
+  initGeo()
 
   const payload = {
     event,
@@ -40,6 +65,8 @@ export function track(event: EventName, props?: EventProps) {
     utm_source: getUTM('utm_source'),
     utm_medium: getUTM('utm_medium'),
     utm_campaign: getUTM('utm_campaign'),
+    device_type: getDeviceType(),
+    ...getGeo(),
     ...props,
   }
 
