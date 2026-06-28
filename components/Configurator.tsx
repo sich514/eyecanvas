@@ -72,16 +72,16 @@ export type Format = 'solo' | 'duo' | 'trio' | 'quad'
 export type BgStyle = 'classic' | 'stardust'
 
 export const FORMATS: {
-  id: Format; name: string; eyes: number; size: string; aspect: [number, number]
+  id: Format; name: string; eyes: number; size: string; aspect: [number, number]; sku: string
 }[] = [
-  { id: 'solo',  name: 'Solo',  eyes: 1, size: '16×16"', aspect: [1, 1] },
-  { id: 'duo',   name: 'Duo',   eyes: 2, size: '32×16"', aspect: [2, 1] },
-  { id: 'trio',  name: 'Trio',  eyes: 3, size: '36×12"', aspect: [3, 1] },
-  { id: 'quad',  name: 'Quad',  eyes: 4, size: '48×12"', aspect: [4, 1] },
+  { id: 'solo',  name: 'Solo',  eyes: 1, size: '16×16"', aspect: [1, 1], sku: 'GLOBAL-CAN-16X16' },
+  { id: 'duo',   name: 'Duo',   eyes: 2, size: '20×20"', aspect: [1, 1], sku: 'GLOBAL-CAN-20X20' },
+  { id: 'trio',  name: 'Trio',  eyes: 3, size: '24×24"', aspect: [1, 1], sku: 'GLOBAL-CAN-24X24' },
+  { id: 'quad',  name: 'Quad',  eyes: 4, size: '30×30"', aspect: [1, 1], sku: 'GLOBAL-CAN-30X30' },
 ]
 
 export const BASE_PRICES: Record<Format, number> = {
-  solo: 99, duo: 159, trio: 199, quad: 239,
+  solo: 89, duo: 129, trio: 159, quad: 199,
 }
 export const STARDUST_ADDON = 30
 
@@ -134,11 +134,9 @@ function EyeCircle({ size = 48, pulse = true }: { size?: number; pulse?: boolean
 function CanvasPreview({ format, bgStyle, maxW = 560 }: { format: Format; bgStyle: BgStyle; maxW?: number }) {
   const fmt = FORMATS.find(f => f.id === format)!
   const [ar, ac] = fmt.aspect
-  const maxH = maxW * 0.65
   const rawH = maxW / (ar / ac)
-  const scale = rawH > maxH ? maxH / rawH : 1
-  const W = Math.round(maxW * scale)
-  const H = Math.round(rawH * scale)
+  const W = Math.round(maxW)
+  const H = Math.round(rawH)
 
   const pad = W * 0.08
   const availW = W - pad * 2
