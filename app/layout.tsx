@@ -21,25 +21,25 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Irisify — Turn Your Iris Into Art',
-  description: 'Upload a photo of your eye. We AI-enhance it and print it on a gallery canvas. Ships to all 50 US states.',
-  alternates: {
-    canonical: 'https://irisify.me',
-  },
+  title: 'Irisify — Turn Your Iris Into Gallery Art | From $89',
+  description: 'Upload a close-up photo of your eye. We AI-enhance your iris and print it on a gallery canvas. The most unique personalized gift. Ships to all 50 US states.',
+  keywords: 'iris canvas print, eye portrait canvas, personalized iris art, unique gift for her, iris photography print',
+  alternates: { canonical: 'https://irisify.me' },
+  robots: { index: true, follow: true },
   openGraph: {
-    title: 'Irisify — Turn Your Iris Into Art',
-    description: 'Your iris is unlike any other. We reveal details invisible to the naked eye — then print them at gallery scale.',
+    title: 'Irisify — Your Eye Transformed Into Gallery Art',
+    description: 'AI-enhanced iris portraits printed on gallery canvas. The most unique personalized gift. From $89.',
     url: 'https://irisify.me',
     siteName: 'Irisify',
-    images: [{ url: 'https://irisify.me/iris-hero.jpg', width: 1200, height: 630, alt: 'Irisify — Turn Your Iris Into Art' }],
+    images: [{ url: 'https://irisify.me/og-image.jpg', width: 1200, height: 630, alt: 'Irisify — AI-enhanced iris portrait canvas' }],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     site: '@irisify',
-    title: 'Irisify — Turn Your Iris Into Art',
-    description: 'Your iris is unlike any other. We reveal details invisible to the naked eye — then print them at gallery scale.',
-    images: ['https://irisify.me/iris-hero.jpg'],
+    title: 'Irisify — Your Eye Transformed Into Gallery Art',
+    description: 'AI-enhanced iris portraits. The most unique gift.',
+    images: ['https://irisify.me/og-image.jpg'],
   },
 }
 

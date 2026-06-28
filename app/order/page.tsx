@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Configurator from '@/components/Configurator'
 
 export const metadata: Metadata = {
-  title: 'Build Your Canvas — Irisify',
+  title: 'Build Your Iris Canvas Portrait | Irisify',
 }
 
 export default function OrderPage() {

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /upload
+Disallow: /api/
+Sitemap: https://irisify.me/sitemap.xml

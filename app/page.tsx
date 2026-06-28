@@ -112,9 +112,40 @@ const TRUST_ITEMS = [
   { icon: '⭐', label: '5-star rated' },
 ]
 
+const SCHEMA_PRODUCT = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'Iris Canvas Portrait',
+  description: 'AI-enhanced iris portrait printed on gallery-quality canvas',
+  brand: { '@type': 'Brand', name: 'Irisify' },
+  offers: {
+    '@type': 'AggregateOffer',
+    lowPrice: '89',
+    highPrice: '299',
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    reviewCount: '127',
+  },
+}
+
+const SCHEMA_ORG = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Irisify',
+  url: 'https://irisify.me',
+  logo: 'https://irisify.me/logo.png',
+  sameAs: ['https://instagram.com/irisify', 'https://tiktok.com/@irisify'],
+}
+
 export default function LandingPage() {
   return (
     <div className="bg-[#0a0a0a] text-white overflow-x-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_PRODUCT) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORG) }} />
       <PageTracker />
 
       {/* ── NAV ─────────────────────────────────────────── */}
@@ -139,7 +170,7 @@ export default function LandingPage() {
         <div className="absolute inset-0">
           <Image
             src="/iris-hero.jpg"
-            alt="Eye iris"
+            alt="AI-enhanced iris portrait canvas print by Irisify"
             fill
             priority
             className="object-cover"
@@ -215,7 +246,7 @@ export default function LandingPage() {
                   <div className="relative rounded-2xl overflow-hidden aspect-square border border-white/10">
                     <Image
                       src="/iris-blur.png"
-                      alt="Original phone photo"
+                      alt="Original phone photo of eye before AI enhancement"
                       fill
                       loading="lazy"
                       className="object-cover"
@@ -229,7 +260,7 @@ export default function LandingPage() {
                     style={{ boxShadow: '0 30px 80px rgba(200,136,58,0.2), 0 4px 20px rgba(0,0,0,0.8)' }}>
                     <Image
                       src="/iris-hero.jpg"
-                      alt="Canvas print result"
+                      alt="Iris photo after AI enhancement — ready for canvas print"
                       fill
                       loading="lazy"
                       className="object-cover"
@@ -415,7 +446,7 @@ export default function LandingPage() {
                     style={{ background: isElena ? 'linear-gradient(135deg, #1c0e00 0%, #0d0d0d 100%)' : '#111' }}>
                     {hasPhoto && !isElena && (
                       <div className="relative shrink-0" style={{ height: 220 }}>
-                        <Image src={photos[i]} alt="Canvas on wall" fill loading="lazy" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <Image src={photos[i]} alt="Customer iris canvas print displayed on wall" fill loading="lazy" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(17,17,17,1) 0%, rgba(17,17,17,0.3) 60%, transparent 100%)' }} />
                       </div>
                     )}
