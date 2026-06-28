@@ -83,7 +83,13 @@ export const FORMATS: {
 export const BASE_PRICES: Record<Format, number> = {
   solo: 89, duo: 129, trio: 159, quad: 199,
 }
-export const STARDUST_ADDON = 30
+export const SHIPPING: Record<Format, number> = {
+  solo: 7, duo: 9, trio: 11, quad: 13,
+}
+export const STARDUST_PRICES: Record<Format, number> = {
+  solo: 15, duo: 20, trio: 25, quad: 39,
+}
+export const STARDUST_ADDON = 30 // legacy, kept for type compat
 
 const PARTICLES = Array.from({ length: 80 }, (_, i) => ({
   id: i,
@@ -233,7 +239,7 @@ function FormatButton({ fmt, selected, onClick, compact }: {
 }
 
 /* ─── Background button ─────────────────────────────────── */
-function BgButton({ id, selected, onClick }: { id: BgStyle; selected: boolean; onClick: () => void }) {
+function BgButton({ id, selected, onClick, stardustPrice }: { id: BgStyle; selected: boolean; onClick: () => void; stardustPrice?: number }) {
   const isStardust = id === 'stardust'
   return (
     <button onClick={onClick} style={{
@@ -276,7 +282,7 @@ function BgButton({ id, selected, onClick }: { id: BgStyle; selected: boolean; o
           {isStardust ? 'Custom glow, made just for you' : 'Clean gallery look'}
         </p>
         <p style={{ fontSize: 11, fontWeight: 600, margin: 0, color: isStardust ? '#C8883A' : '#555' }}>
-          {isStardust ? '+$30' : 'Included'}
+          {isStardust ? `+$${stardustPrice ?? 30}` : 'Included'}
         </p>
       </div>
     </button>
@@ -320,7 +326,9 @@ export default function Configurator({
   const isMobile = useIsMobile()
 
   const fmt = FORMATS.find(f => f.id === format)!
-  const total = BASE_PRICES[format] + (bgStyle === 'stardust' ? STARDUST_ADDON : 0)
+  const stardustPrice = STARDUST_PRICES[format]
+  const shipping = SHIPPING[format]
+  const total = BASE_PRICES[format] + (bgStyle === 'stardust' ? stardustPrice : 0) + shipping
 
   const viewerCount = useViewerCount()
   const [nudgeDismissed, setNudgeDismissed] = useState(false)
@@ -441,7 +449,7 @@ export default function Configurator({
             <p style={{ fontSize: 15, fontWeight: 700, margin: '0 0 12px', color: '#fff' }}>Background style</p>
             <div style={{ display: 'flex', gap: 10 }}>
               <BgButton id="classic" selected={bgStyle === 'classic'} onClick={() => handleStyleSelect('classic')} />
-              <BgButton id="stardust" selected={bgStyle === 'stardust'} onClick={() => handleStyleSelect('stardust')} />
+              <BgButton id="stardust" selected={bgStyle === 'stardust'} onClick={() => handleStyleSelect('stardust')} stardustPrice={stardustPrice} />
             </div>
           </div>
 
@@ -458,12 +466,12 @@ export default function Configurator({
               {bgStyle === 'stardust' && (
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#888', fontSize: 14 }}>Stardust Effect</span>
-                  <span style={{ color: '#C8883A', fontSize: 14, fontWeight: 500 }}>+${STARDUST_ADDON}</span>
+                  <span style={{ color: '#C8883A', fontSize: 14, fontWeight: 500 }}>+${stardustPrice}</span>
                 </div>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: '#888', fontSize: 14 }}>Shipping</span>
-                <span style={{ color: '#4ade80', fontSize: 14, fontWeight: 500 }}>Free</span>
+                <span style={{ color: '#fff', fontSize: 14, fontWeight: 500 }}>${shipping}</span>
               </div>
             </div>
 
@@ -514,8 +522,8 @@ export default function Configurator({
           <div style={{ display: 'flex', gap: 8 }}>
             {[
               { icon: '🛡', label: 'Free revision' },
-              { icon: '🚚', label: 'Free US shipping' },
               { icon: '⏱', label: 'Ships in 5–7 days' },
+              { icon: '🔒', label: 'Secure checkout' },
             ].map(b => (
               <div key={b.label} style={{
                 flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,

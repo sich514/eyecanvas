@@ -22,7 +22,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'Irisify — Turn Your Iris Into Art',
-  description: 'Upload a photo of your eye. We AI-enhance it and print it on a gallery canvas. Ships free across the US.',
+  description: 'Upload a photo of your eye. We AI-enhance it and print it on a gallery canvas. Ships to all 50 US states.',
   alternates: {
     canonical: 'https://irisify.me',
   },

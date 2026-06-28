@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createServiceClient } from '@/lib/supabase'
-import { BASE_PRICES, FORMATS, STARDUST_ADDON } from '@/lib/products'
+import { BASE_PRICES, FORMATS, SHIPPING, STARDUST_PRICES } from '@/lib/products'
 import type { Format, BgStyle } from '@/lib/products'
 
 const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!)
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const fmt = FORMATS.find(f => f.id === format)!
     const bgStyle = (style ?? 'classic') as BgStyle
-    const price_cents = (BASE_PRICES[format as Format] + (bgStyle === 'stardust' ? STARDUST_ADDON : 0)) * 100
+    const price_cents = (BASE_PRICES[format as Format] + (bgStyle === 'stardust' ? STARDUST_PRICES[format as Format] : 0) + SHIPPING[format as Format]) * 100
     const productName = `Irisify ${fmt.name} ${fmt.size}${bgStyle === 'stardust' ? ' + Stardust' : ''}`
 
     const supabase = createServiceClient()

@@ -60,7 +60,7 @@ const FAQS = [
   },
   {
     q: "Do you ship across the US?",
-    a: "Yes — free tracked shipping to all 50 states. Arrives 5–7 business days after you approve your preview.",
+    a: "Yes — we ship to all 50 states. Arrives 5–7 business days after you approve your preview. Shipping is calculated at checkout based on your canvas size.",
   },
   {
     q: "Can I send it as a gift to a different address?",
@@ -108,7 +108,7 @@ const TESTIMONIALS = [
 const TRUST_ITEMS = [
   { icon: '🔒', label: 'Secure checkout' },
   { icon: '✏️', label: 'Free revision before printing' },
-  { icon: '🚚', label: 'Free US shipping' },
+  { icon: '🚚', label: 'Ships in 5–7 days' },
   { icon: '⭐', label: '5-star rated' },
 ]
 
@@ -304,7 +304,7 @@ export default function LandingPage() {
               {
                 n: '03',
                 title: 'Arrives gift-ready',
-                desc: 'Gallery-wrapped canvas on a solid frame, packed in a luxury box with a hanging kit. Ships in 5–7 days. Free.',
+                desc: 'Gallery-wrapped canvas on a solid frame, packed in a luxury box with a hanging kit. Ships to your door in 5–7 days.',
                 extra: 'Every order includes a hanging kit. Ready to give.',
               },
             ].map((step, i) => (
@@ -493,7 +493,7 @@ export default function LandingPage() {
             >
               Start My Portrait
             </ScrollToPricingBtn>
-            <p className="mt-6 text-white/30 text-sm">Ships in 5–7 business days · Free revision included</p>
+            <p className="mt-6 text-white/30 text-sm">Ships in 5–7 business days · Free revision included · Tracked shipping</p>
           </div>
         </FadeUp>
       </section>
