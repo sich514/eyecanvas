@@ -107,7 +107,6 @@ const TESTIMONIALS = [
 
 const TRUST_ITEMS = [
   { icon: '🔒', label: 'Secure checkout' },
-  { icon: '🎨', label: 'Free AI enhancement' },
   { icon: '✏️', label: 'Free revision before printing' },
   { icon: '🚚', label: 'Free US shipping' },
   { icon: '⭐', label: '5-star rated' },

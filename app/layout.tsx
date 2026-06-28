@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <StickyScrollHeader />
         <WhatsAppButton />
-        <ExitIntentPopup />
+        {/* <ExitIntentPopup /> */}
         <MobileBottomCTA />
         <AnalyticsPixels />
       </body>
