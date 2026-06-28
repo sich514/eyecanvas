@@ -1,5 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Configurator from '@/components/Configurator'
+
+export const metadata: Metadata = {
+  title: 'Build Your Canvas — Irisify',
+}
 
 export default function OrderPage() {
   return (
@@ -17,7 +22,7 @@ export default function OrderPage() {
       </nav>
 
       <h1 style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)' }}>
-        Order your EyeCanvas portrait
+        Order your Irisify portrait
       </h1>
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px 80px' }}>

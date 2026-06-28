@@ -18,7 +18,7 @@ export default function AdminClient({ orders }: { orders: Order[] }) {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold">EyeCanvas — Admin</h1>
+          <h1 className="text-2xl font-bold">Irisify — Admin</h1>
           <div className="flex items-center gap-4">
             <Link href="/admin/analytics" className="text-sm text-purple-600 hover:text-purple-800 font-medium">📊 Analytics</Link>
             <form action="/api/admin/logout" method="POST">

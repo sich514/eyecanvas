@@ -71,7 +71,7 @@ export default function PreviewClient({ order }: { order: Order }) {
           </p>
 
           <Link href="/" style={{ display: 'inline-block', marginTop: 32, color: '#555', fontSize: 13, textDecoration: 'none' }}>
-            ← Back to EyeCanvas
+            ← Back to Irisify
           </Link>
         </div>
       </Wrapper>
@@ -140,7 +140,7 @@ function ApproveFlow({ order, fmt }: { order: Order; fmt: { name: string; size: 
       <div style={{ maxWidth: 680, margin: '0 auto' }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ color: '#444', fontSize: 13, marginBottom: 6 }}>Order #{order.id.slice(0, 8).toUpperCase()}</div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 700, color: '#fff', margin: 0 }}>Your EyeCanvas preview</h1>
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 700, color: '#fff', margin: 0 }}>Your Irisify preview</h1>
           <p style={{ color: '#555', marginTop: 6 }}>{fmt.name} — {fmt.size} canvas</p>
         </div>
 

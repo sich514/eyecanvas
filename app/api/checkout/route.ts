@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const fmt = FORMATS.find(f => f.id === format)!
     const bgStyle = (style ?? 'classic') as BgStyle
     const price_cents = (BASE_PRICES[format as Format] + (bgStyle === 'stardust' ? STARDUST_ADDON : 0)) * 100
-    const productName = `EyeCanvas ${fmt.name} ${fmt.size}${bgStyle === 'stardust' ? ' + Stardust' : ''}`
+    const productName = `Irisify ${fmt.name} ${fmt.size}${bgStyle === 'stardust' ? ' + Stardust' : ''}`
 
     const supabase = createServiceClient()
 

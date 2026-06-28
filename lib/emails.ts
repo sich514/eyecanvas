@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 import { Order } from './supabase'
 import { TIERS } from './tiers'
 
-const FROM = 'EyeCanvas <noreply@eyecanvas.co>'
+const FROM = 'Irisify <noreply@irisify.co>'
 
 export async function sendPreviewEmail(order: Order) {
   const resend = new Resend(process.env.RESEND_API_KEY)
@@ -11,10 +11,10 @@ export async function sendPreviewEmail(order: Order) {
   await resend.emails.send({
     from: FROM,
     to: order.customer_email,
-    subject: 'Your EyeCanvas is ready to approve 👁',
+    subject: 'Your Irisify is ready to approve 👁',
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
-        <h1 style="color:#1D9E75">Your EyeCanvas preview is ready!</h1>
+        <h1 style="color:#1D9E75">Your Irisify preview is ready!</h1>
         <p>Hi ${order.customer_name},</p>
         <p>We've enhanced your eye photo with AI to print-ready quality. Take a look at your preview below.</p>
         ${order.enhanced_image_url ? `<img src="${order.enhanced_image_url}" style="width:100%;border-radius:8px;margin:16px 0" alt="Enhanced preview"/>` : ''}
@@ -56,14 +56,14 @@ export async function sendShippedEmail(order: Order) {
   await resend.emails.send({
     from: FROM,
     to: order.customer_email,
-    subject: 'Your EyeCanvas is on its way!',
+    subject: 'Your Irisify is on its way!',
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
         <h1 style="color:#1D9E75">Your canvas has shipped! 🎉</h1>
         <p>Hi ${order.customer_name},</p>
-        <p>Your EyeCanvas is on its way to you.</p>
+        <p>Your Irisify is on its way to you.</p>
         ${order.tracking_url ? `<p><a href="${order.tracking_url}" style="background:#1D9E75;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none">Track your order</a></p>` : ''}
-        <p>Thank you for choosing EyeCanvas!</p>
+        <p>Thank you for choosing Irisify!</p>
       </div>
     `,
   })
@@ -71,7 +71,7 @@ export async function sendShippedEmail(order: Order) {
 
 export async function sendRevisionNotificationEmail(order: Order) {
   const resend = new Resend(process.env.RESEND_API_KEY)
-  const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@eyecanvas.co'
+  const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@irisify.co'
   await resend.emails.send({
     from: FROM,
     to: adminEmail,

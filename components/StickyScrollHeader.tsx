@@ -26,8 +26,8 @@ export default function StickyScrollHeader() {
       transition: 'transform 300ms ease',
       pointerEvents: visible ? 'auto' : 'none',
     }}>
-      <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 17, fontWeight: 700, color: '#fff' }}>
-        Eye<span style={{ color: '#C8883A' }}>Canvas</span>
+      <span style={{ fontFamily: 'serif', fontSize: '20px', letterSpacing: '-0.5px', fontWeight: 400 }}>
+        <span style={{ color: '#ffffff' }}>Iris</span><span style={{ color: '#C8883A' }}>ify</span>
       </span>
       <button onClick={scroll} style={{
         padding: '8px 18px', borderRadius: 40, border: 'none',
