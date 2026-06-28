@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { track } from '@/lib/analytics'
-import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/lib/products'
+import { FORMATS, BASE_PRICES, SHIPPING, STARDUST_PRICES } from '@/lib/products'
 import type { Format, BgStyle } from '@/lib/products'
 import UploadGuide from '@/components/UploadGuide'
 
@@ -31,7 +31,14 @@ function UploadFlow() {
 
   const fmt = FORMATS.find(f => f.id === format) ?? FORMATS[0]
   const eyeCount = fmt.eyes
-  const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_ADDON : 0)
+  const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_PRICES[format] : 0) + SHIPPING[format]
+
+  useEffect(() => {
+    import('@/lib/meta-pixel').then(({ MetaPixel }) => {
+      MetaPixel.addToCart({ size: fmt.size, price: total, style })
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [step, setStep] = useState<Step>('upload')
   const [files, setFiles] = useState<(File | null)[]>(() => Array(eyeCount).fill(null))
@@ -132,8 +139,8 @@ function UploadFlow() {
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff' }}>
       {/* Nav */}
       <nav style={{ borderBottom: '1px solid #1a1a1a', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link href="/" style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 20, fontWeight: 700, color: '#fff', textDecoration: 'none' }}>
-          Eye<span style={{ color: '#C8883A' }}>Canvas</span>
+        <Link href="/" style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 20, fontWeight: 400, color: '#fff', textDecoration: 'none', letterSpacing: '-0.5px' }}>
+          Iris<span style={{ color: '#C8883A' }}>ify</span>
         </Link>
         <Link href="/order" style={{ color: '#555', fontSize: 13, textDecoration: 'none' }}>← Change selection</Link>
       </nav>
@@ -347,12 +354,12 @@ function UploadFlow() {
               {style === 'stardust' && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                   <span style={{ color: '#555', fontSize: 14 }}>Stardust Effect</span>
-                  <span style={{ color: '#C8883A', fontSize: 14 }}>+${STARDUST_ADDON}</span>
+                  <span style={{ color: '#C8883A', fontSize: 14 }}>+${STARDUST_PRICES[format]}</span>
                 </div>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span style={{ color: '#555', fontSize: 14 }}>Shipping</span>
-                <span style={{ color: '#4ade80', fontSize: 14 }}>Free</span>
+                <span style={{ color: '#fff', fontSize: 14 }}>${SHIPPING[format]}</span>
               </div>
               <div style={{ borderTop: '1px solid #1e1e1e', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontWeight: 700, fontSize: 15 }}>Total</span>

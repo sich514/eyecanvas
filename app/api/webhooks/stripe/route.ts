@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { createServiceClient } from '@/lib/supabase'
 import { upscaleImage } from '@/lib/replicate'
 import { sendPreviewEmail } from '@/lib/emails'
+import { sendCapiEvent } from '@/lib/meta-capi'
 
 const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -45,6 +46,18 @@ export async function POST(req: NextRequest) {
   if (order.status !== 'pending_payment') {
     return NextResponse.json({ received: true })
   }
+
+  // Fire Meta CAPI Purchase event (server-side, survives ad blockers)
+  await sendCapiEvent({
+    eventName: 'Purchase',
+    email: order.customer_email ?? session.customer_details?.email ?? undefined,
+    orderId,
+    value: session.amount_total ? session.amount_total / 100 : undefined,
+    clientIp: session.customer_details?.address?.postal_code ? undefined : undefined,
+    userAgent: undefined,
+    fbp: session.metadata?.fbp ?? undefined,
+    fbc: session.metadata?.fbc ?? undefined,
+  })
 
   await supabase
     .from('orders')

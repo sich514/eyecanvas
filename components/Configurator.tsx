@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { track } from '@/lib/analytics'
+import { MetaPixel } from '@/lib/meta-pixel'
 
 function PaymentBadges({ small }: { small?: boolean }) {
   const h = small ? 20 : 22
@@ -343,10 +344,21 @@ export default function Configurator({
     trackInteraction()
     if (f !== prevFormat.current) { setNudgeDismissed(false); prevFormat.current = f }
     setFormat(f)
+    const selectedFmt = FORMATS.find(x => x.id === f)!
+    const selectedPrice = BASE_PRICES[f] + SHIPPING[f]
+    MetaPixel.viewContent({ size: selectedFmt.size, price: selectedPrice, eyes: selectedFmt.eyes })
   }
-  const handleStyleSelect = (s: BgStyle) => { trackInteraction(); setBgStyle(s) }
+  const handleStyleSelect = (s: BgStyle) => {
+    trackInteraction()
+    setBgStyle(s)
+    if (s === 'stardust') {
+      const fmtData = FORMATS.find(x => x.id === format)!
+      MetaPixel.addToCart({ size: fmtData.size, price: total + STARDUST_PRICES[format], style: 'stardust' })
+    }
+  }
   const handleStart = () => {
     track('configurator_cta_click', { format, style: bgStyle, price: total })
+    MetaPixel.initiateCheckout({ size: fmt.size, price: total, eyes: fmt.eyes, style: bgStyle })
     if (onStart) {
       onStart(format, bgStyle)
     } else {

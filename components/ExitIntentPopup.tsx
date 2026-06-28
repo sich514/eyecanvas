@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
+import { MetaPixel } from '@/lib/meta-pixel'
 
 const STORAGE_KEY = 'irisify_popup_shown'
 const MIN_DELAY = 15000
@@ -75,12 +76,13 @@ export default function ExitIntentPopup() {
     if (!email.trim()) return
     setLoading(true)
     try {
-      const utm = localStorage.getItem('ec_utm_source') ?? null
+      const utm = localStorage.getItem('irisify_utm_source') ?? localStorage.getItem('ec_utm_source') ?? null
       await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), utm_source: utm, source: 'exit_popup' }),
       })
+      MetaPixel.lead('exit_popup')
       setSubmitted(true)
     } catch {}
     setLoading(false)

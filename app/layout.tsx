@@ -6,6 +6,7 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import StickyScrollHeader from '@/components/StickyScrollHeader'
 import MobileBottomCTA from '@/components/MobileBottomCTA'
 import ExitIntentPopup from '@/components/ExitIntentPopup'
+import UTMSaver from '@/components/UTMSaver'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
+        <UTMSaver />
         {children}
         <StickyScrollHeader />
         <WhatsAppButton />
