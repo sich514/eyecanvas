@@ -4,8 +4,8 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import AnalyticsPixels from '@/components/AnalyticsPixels'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import StickyScrollHeader from '@/components/StickyScrollHeader'
-import ExitIntent from '@/components/ExitIntent'
 import MobileBottomCTA from '@/components/MobileBottomCTA'
+import ExitIntentPopup from '@/components/ExitIntentPopup'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <StickyScrollHeader />
         <WhatsAppButton />
-        <ExitIntent />
+        <ExitIntentPopup />
         <MobileBottomCTA />
         <AnalyticsPixels />
       </body>

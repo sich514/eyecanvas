@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import IrisifyLogo from './IrisifyLogo'
 
 export default function StickyScrollHeader() {
   const [visible, setVisible] = useState(false)
@@ -26,9 +27,7 @@ export default function StickyScrollHeader() {
       transition: 'transform 300ms ease',
       pointerEvents: visible ? 'auto' : 'none',
     }}>
-      <span style={{ fontFamily: 'serif', fontSize: '20px', letterSpacing: '-0.5px', fontWeight: 400 }}>
-        <span style={{ color: '#ffffff' }}>Iris</span><span style={{ color: '#C8883A' }}>ify</span>
-      </span>
+      <IrisifyLogo size="sm" />
       <button onClick={scroll} style={{
         padding: '8px 18px', borderRadius: 40, border: 'none',
         background: '#C8883A', color: '#0a0a0a',

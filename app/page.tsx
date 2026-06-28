@@ -7,6 +7,7 @@ import InlineOrderFlow from '@/components/InlineOrderFlow'
 import PageTracker from '@/components/PageTracker'
 import ScrollToPricingBtn from '@/components/ScrollToPricingBtn'
 import PhotoLightbox from '@/components/PhotoLightbox'
+import IrisifyLogo from '@/components/IrisifyLogo'
 
 function FooterPayments() {
   const pill: React.CSSProperties = {
@@ -121,9 +122,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-5"
         style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%)' }}
       >
-        <span style={{ fontFamily: 'serif', fontSize: '22px', letterSpacing: '-0.5px', fontWeight: 400 }}>
-          <span style={{ color: '#ffffff' }}>Iris</span><span style={{ color: '#C8883A' }}>ify</span>
-        </span>
+        <IrisifyLogo size="md" />
         <div className="flex items-center gap-6">
           <a href="#how-it-works" className="hidden md:block text-sm text-white/60 hover:text-white transition-colors">How it works</a>
           <ScrollToPricingBtn className="hidden md:block text-sm text-white/60 hover:text-white transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Pricing</ScrollToPricingBtn>
@@ -503,9 +502,7 @@ export default function LandingPage() {
       {/* ── FOOTER ───────────────────────────────────────── */}
       <footer className="border-t border-white/8 py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <span style={{ fontFamily: 'serif', fontSize: '22px', letterSpacing: '-0.5px', fontWeight: 400 }}>
-            <span style={{ color: '#ffffff' }}>Iris</span><span style={{ color: '#C8883A' }}>ify</span>
-          </span>
+          <IrisifyLogo size="md" />
           <div className="flex flex-col items-center gap-2">
             <p className="text-white/30 text-sm">© {new Date().getFullYear()} Irisify. All rights reserved.</p>
             <FooterPayments />
