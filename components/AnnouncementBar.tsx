@@ -9,8 +9,13 @@ export default function AnnouncementBar() {
         }
       `}</style>
       <div style={{
-        background: 'linear-gradient(90deg, #0f0900 0%, #1a1000 50%, #0f0900 100%)',
-        borderBottom: '1px solid rgba(200,136,58,0.15)',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 200,
+        background: '#1a0f00',
+        borderBottom: '1px solid rgba(200,136,58,0.3)',
         padding: '8px 16px',
         display: 'flex',
         alignItems: 'center',

@@ -149,8 +149,8 @@ export default function LandingPage() {
       <PageTracker />
 
       {/* ── NAV ─────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-5"
-        style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%)' }}
+      <nav className="fixed left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-5"
+        style={{ top: 35, background: 'linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%)' }}
       >
         <IrisifyLogo size="md" />
         <div className="flex items-center gap-6">

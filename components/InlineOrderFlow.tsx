@@ -433,7 +433,7 @@ export default function InlineOrderFlow() {
                         {wallpaperExpanded && (
                           <div style={{ marginTop: 10, padding: '10px 0 2px' }} onClick={e => e.stopPropagation()}>
                             <p style={{ fontSize: 11, color: '#aaa', margin: '0 0 10px', lineHeight: 1.6 }}>
-                              Получи в комплекте к своему постеру stunning изображение в высоком разрешении — поставь на заставку смартфона или рабочего стола, или используй в социальных сетях.
+                              Get stunning high-res wallpapers of your iris — set them as your phone or desktop background, or share on social media.
                             </p>
                             {/* Schematic mockups */}
                             <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end' }}>
@@ -484,9 +484,14 @@ export default function InlineOrderFlow() {
                                 <span style={{ fontSize: 9, color: '#555' }}>Desktop 4K</span>
                               </div>
 
-                              <p style={{ fontSize: 10, color: '#C8883A', margin: 0, lineHeight: 1.5, flex: 1 }}>
-                                Доставим на email сразу после готовности постера
-                              </p>
+                              <div style={{ flex: 1 }}>
+                                <p style={{ fontSize: 10, color: '#C8883A', margin: '0 0 4px', lineHeight: 1.5 }}>
+                                  Delivered to your email when your poster is ready
+                                </p>
+                                <p style={{ fontSize: 10, color: '#666', margin: 0, lineHeight: 1.5 }}>
+                                  Our designer personally prepares every file at the highest quality — just for you.
+                                </p>
+                              </div>
                             </div>
                           </div>
                         )}
