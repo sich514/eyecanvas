@@ -224,7 +224,7 @@ function FormatButton({ fmt, selected, onClick, compact }: {
       position: 'relative', overflow: 'hidden',
     }}>
 
-      {/* Bestseller shine sweep */}
+      {/* Shine sweep */}
       {isBestseller && (
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
@@ -233,19 +233,14 @@ function FormatButton({ fmt, selected, onClick, compact }: {
         }} />
       )}
 
-      {/* Bestseller badge */}
+      {/* Bestseller badge — inline, above dots */}
       {isBestseller && (
         <div style={{
-          position: 'absolute', top: compact ? 5 : 6, right: compact ? 5 : 6, zIndex: 2,
           background: 'linear-gradient(135deg,#d4922a,#C8883A)',
-          color: '#000',
-          fontSize: compact ? 7 : 8,
-          fontWeight: 800,
-          letterSpacing: '0.07em',
-          padding: compact ? '2px 5px' : '2px 6px',
-          borderRadius: 20,
-          textTransform: 'uppercase' as const,
-          boxShadow: '0 2px 8px rgba(200,136,58,0.4)',
+          color: '#000', fontSize: compact ? 7 : 8, fontWeight: 800,
+          letterSpacing: '0.06em', padding: '2px 7px', borderRadius: 20,
+          textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const,
+          boxShadow: '0 1px 6px rgba(200,136,58,0.35)', zIndex: 2,
         }}>★ Bestseller</div>
       )}
 
