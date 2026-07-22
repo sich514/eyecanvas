@@ -31,6 +31,7 @@ export default function InlineOrderFlow() {
 
   const [info, setInfo] = useState<CustomerInfo>({ name: '', email: '', line1: '', line2: '', city: '', state: '', postal_code: '', country: 'US' })
   const [wallpaperPack, setWallpaperPack] = useState(false)
+  const [wallpaperExpanded, setWallpaperExpanded] = useState(false)
   const [checkingOut, setCheckingOut] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -418,9 +419,77 @@ export default function InlineOrderFlow() {
                           <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>✦ Add Digital Art Pack</span>
                           <span style={{ fontSize: 13, fontWeight: 700, color: '#C8883A' }}>+$7</span>
                         </div>
-                        <div style={{ fontSize: 11, color: '#666', marginTop: 2, lineHeight: 1.5 }}>
-                          🖥 Desktop (4K) + 📱 Phone wallpaper · <span style={{ color: '#C8883A' }}>instant email</span>
+                        <div style={{ fontSize: 11, color: '#666', marginTop: 3, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span>🖥 Desktop (4K) + 📱 Phone wallpaper</span>
+                          <button
+                            onClick={e => { e.stopPropagation(); setWallpaperExpanded(x => !x) }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#C8883A', fontSize: 11, fontWeight: 600, flexShrink: 0 }}
+                          >
+                            {wallpaperExpanded ? 'Hide ▲' : 'Show more ▼'}
+                          </button>
                         </div>
+
+                        {/* Expanded detail */}
+                        {wallpaperExpanded && (
+                          <div style={{ marginTop: 10, padding: '10px 0 2px' }} onClick={e => e.stopPropagation()}>
+                            <p style={{ fontSize: 11, color: '#aaa', margin: '0 0 10px', lineHeight: 1.6 }}>
+                              Получи в комплекте к своему постеру stunning изображение в высоком разрешении — поставь на заставку смартфона или рабочего стола, или используй в социальных сетях.
+                            </p>
+                            {/* Schematic mockups */}
+                            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end' }}>
+                              {/* Phone */}
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                                <div style={{
+                                  width: 36, height: 62, borderRadius: 7, border: '2px solid rgba(200,136,58,0.5)',
+                                  background: '#0a0800', position: 'relative', overflow: 'hidden',
+                                }}>
+                                  {/* notch */}
+                                  <div style={{ position: 'absolute', top: 3, left: '50%', transform: 'translateX(-50%)', width: 10, height: 3, borderRadius: 2, background: 'rgba(200,136,58,0.4)' }} />
+                                  {/* eye on screen */}
+                                  <div style={{
+                                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+                                    width: 18, height: 18, borderRadius: '50%',
+                                    border: '1.5px solid rgba(200,136,58,0.7)',
+                                    background: 'radial-gradient(circle at 40% 38%, #3d2a0a, #0a0800)',
+                                  }}>
+                                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '35%', height: '35%', borderRadius: '50%', background: '#000' }} />
+                                    <div style={{ position: 'absolute', top: '20%', left: '25%', width: '18%', height: '14%', borderRadius: '50%', background: 'rgba(255,255,255,0.5)' }} />
+                                  </div>
+                                  {/* home bar */}
+                                  <div style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', width: 12, height: 2, borderRadius: 2, background: 'rgba(200,136,58,0.35)' }} />
+                                </div>
+                                <span style={{ fontSize: 9, color: '#555' }}>Phone</span>
+                              </div>
+
+                              {/* Desktop */}
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                                <div style={{
+                                  width: 70, height: 44, borderRadius: 4, border: '2px solid rgba(200,136,58,0.5)',
+                                  background: '#0a0800', position: 'relative', overflow: 'hidden',
+                                }}>
+                                  {/* eye on screen */}
+                                  <div style={{
+                                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+                                    width: 22, height: 22, borderRadius: '50%',
+                                    border: '1.5px solid rgba(200,136,58,0.7)',
+                                    background: 'radial-gradient(circle at 40% 38%, #3d2a0a, #0a0800)',
+                                  }}>
+                                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '35%', height: '35%', borderRadius: '50%', background: '#000' }} />
+                                    <div style={{ position: 'absolute', top: '20%', left: '25%', width: '18%', height: '14%', borderRadius: '50%', background: 'rgba(255,255,255,0.5)' }} />
+                                  </div>
+                                </div>
+                                {/* stand */}
+                                <div style={{ width: 14, height: 4, background: 'rgba(200,136,58,0.3)', borderRadius: 1 }} />
+                                <div style={{ width: 22, height: 2, background: 'rgba(200,136,58,0.25)', borderRadius: 1 }} />
+                                <span style={{ fontSize: 9, color: '#555' }}>Desktop 4K</span>
+                              </div>
+
+                              <p style={{ fontSize: 10, color: '#C8883A', margin: 0, lineHeight: 1.5, flex: 1 }}>
+                                Доставим на email сразу после готовности постера
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
