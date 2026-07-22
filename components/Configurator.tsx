@@ -233,27 +233,28 @@ function FormatButton({ fmt, selected, onClick, compact }: {
         }} />
       )}
 
-      {/* Bestseller badge — inline, above dots */}
-      {isBestseller && (
+      {isBestseller ? (
+        /* Bestseller badge replaces dots */
         <div style={{
           background: 'linear-gradient(135deg,#d4922a,#C8883A)',
           color: '#000', fontSize: compact ? 7 : 8, fontWeight: 800,
-          letterSpacing: '0.06em', padding: '2px 7px', borderRadius: 20,
+          letterSpacing: '0.06em', padding: compact ? '3px 8px' : '3px 10px', borderRadius: 20,
           textTransform: 'uppercase' as const, whiteSpace: 'nowrap' as const,
-          boxShadow: '0 1px 6px rgba(200,136,58,0.35)', zIndex: 2,
+          boxShadow: '0 2px 8px rgba(200,136,58,0.4)', zIndex: 2,
+          height: 16, display: 'flex', alignItems: 'center',
         }}>★ Bestseller</div>
+      ) : (
+        <div style={{ display: 'flex', gap: 3, alignItems: 'center', height: 16, flexWrap: 'nowrap' }}>
+          {Array.from({ length: fmt.eyes }).map((_, i) => (
+            <div key={i} style={{
+              width: compact ? 7 : 10, height: compact ? 7 : 10, borderRadius: '50%',
+              border: '1.5px solid rgba(200,136,58,0.7)',
+              background: 'radial-gradient(circle at 40% 38%, #3d2a0a, #0a0800)',
+              flexShrink: 0,
+            }} />
+          ))}
+        </div>
       )}
-
-      <div style={{ display: 'flex', gap: 3, alignItems: 'center', height: 16, flexWrap: 'nowrap' }}>
-        {Array.from({ length: fmt.eyes }).map((_, i) => (
-          <div key={i} style={{
-            width: compact ? 7 : 10, height: compact ? 7 : 10, borderRadius: '50%',
-            border: '1.5px solid rgba(200,136,58,0.7)',
-            background: 'radial-gradient(circle at 40% 38%, #3d2a0a, #0a0800)',
-            flexShrink: 0,
-          }} />
-        ))}
-      </div>
       <div style={{ textAlign: 'center' }}>
         <p style={{ color: '#fff', fontSize: compact ? 12 : 13, fontWeight: 600, margin: 0, lineHeight: 1.3 }}>{fmt.name}</p>
         <p style={{ color: '#555', fontSize: compact ? 10 : 11, margin: 0, whiteSpace: 'nowrap' }}>{fmt.size}</p>

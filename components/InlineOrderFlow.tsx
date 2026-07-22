@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import Configurator from '@/components/Configurator'
 import UploadGuide from '@/components/UploadGuide'
-import { FORMATS, BASE_PRICES, STARDUST_ADDON } from '@/lib/products'
+import { FORMATS, BASE_PRICES, SHIPPING, STARDUST_PRICES } from '@/lib/products'
 import type { Format, BgStyle } from '@/lib/products'
 import { track } from '@/lib/analytics'
 
@@ -30,6 +30,7 @@ export default function InlineOrderFlow() {
   const [uploadResults, setUploadResults] = useState<({ upload_id: string; url: string } | null)[]>([null])
 
   const [info, setInfo] = useState<CustomerInfo>({ name: '', email: '', line1: '', line2: '', city: '', state: '', postal_code: '', country: 'US' })
+  const [wallpaperPack, setWallpaperPack] = useState(false)
   const [checkingOut, setCheckingOut] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -38,7 +39,8 @@ export default function InlineOrderFlow() {
 
   const fmt = FORMATS.find(f => f.id === format) ?? FORMATS[0]
   const eyeCount = fmt.eyes
-  const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_ADDON : 0)
+  const WALLPAPER_PRICE = 7
+  const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_PRICES[format] : 0) + SHIPPING[format] + (wallpaperPack ? WALLPAPER_PRICE : 0)
   const allFilesSelected = files.every(f => f !== null)
 
   // Lock body scroll when modal open
@@ -132,6 +134,7 @@ export default function InlineOrderFlow() {
           customer_name: info.name,
           customer_email: info.email,
           shipping_address: { line1: info.line1, line2: info.line2, city: info.city, state: info.state, postal_code: info.postal_code, country: info.country },
+          wallpaper_pack: wallpaperPack,
         }),
       })
       const data = await res.json()
@@ -369,13 +372,48 @@ export default function InlineOrderFlow() {
                     {style === 'stardust' && (
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                         <span style={{ color: '#555', fontSize: 13 }}>Stardust Effect</span>
-                        <span style={{ color: '#C8883A', fontSize: 13 }}>+${STARDUST_ADDON}</span>
+                        <span style={{ color: '#C8883A', fontSize: 13 }}>+${STARDUST_PRICES[format]}</span>
                       </div>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                       <span style={{ color: '#555', fontSize: 13 }}>Shipping</span>
-                      <span style={{ color: '#4ade80', fontSize: 13 }}>Free</span>
+                      <span style={{ color: '#fff', fontSize: 13 }}>${SHIPPING[format]}</span>
                     </div>
+
+                    {/* Wallpaper Pack upsell */}
+                    <div
+                      onClick={() => setWallpaperPack(p => !p)}
+                      style={{
+                        marginBottom: 12, padding: '10px 12px', borderRadius: 12, cursor: 'pointer',
+                        border: `1.5px solid ${wallpaperPack ? '#C8883A' : '#2a2a2a'}`,
+                        background: wallpaperPack ? 'rgba(200,136,58,0.07)' : '#0a0a0a',
+                        transition: 'all 200ms', display: 'flex', alignItems: 'flex-start', gap: 10,
+                      }}
+                    >
+                      <div style={{
+                        width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
+                        border: `1.5px solid ${wallpaperPack ? '#C8883A' : '#444'}`,
+                        background: wallpaperPack ? '#C8883A' : 'transparent',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 200ms',
+                      }}>
+                        {wallpaperPack && (
+                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                            <path d="M1 3.5l2.5 2.5 5.5-5" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>✦ Add Digital Art Pack</span>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: '#C8883A' }}>+$7</span>
+                        </div>
+                        <div style={{ fontSize: 11, color: '#666', marginTop: 2, lineHeight: 1.5 }}>
+                          🖥 Desktop (4K) + 📱 Phone wallpaper · <span style={{ color: '#C8883A' }}>instant email</span>
+                        </div>
+                      </div>
+                    </div>
+
                     <div style={{ borderTop: '1px solid #1e1e1e', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontWeight: 700, fontSize: 14, color: '#fff' }}>Total</span>
                       <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 22, fontWeight: 700, color: '#C8883A' }}>${total}</span>
