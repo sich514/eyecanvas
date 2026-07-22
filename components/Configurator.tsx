@@ -210,17 +210,45 @@ function CanvasPreview({ format, bgStyle, maxW = 560 }: { format: Format; bgStyl
 function FormatButton({ fmt, selected, onClick, compact }: {
   fmt: typeof FORMATS[0]; selected: boolean; onClick: () => void; compact?: boolean
 }) {
+  const isBestseller = fmt.id === 'duo'
   return (
     <button onClick={onClick} style={{
       flex: 1,
       padding: compact ? '10px 4px' : '12px 8px',
       borderRadius: 12,
-      border: selected ? '2px solid #C8883A' : '1px solid #2a2a2a',
+      border: selected ? '2px solid #C8883A' : isBestseller ? '1.5px solid rgba(200,136,58,0.35)' : '1px solid #2a2a2a',
       background: selected ? '#1a1200' : '#111',
       cursor: 'pointer', transition: 'all 200ms ease',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       gap: compact ? 5 : 8, outline: 'none', minWidth: 0,
+      position: 'relative', overflow: 'hidden',
     }}>
+
+      {/* Bestseller shine sweep */}
+      {isBestseller && (
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
+          background: 'linear-gradient(105deg, transparent 35%, rgba(200,136,58,0.18) 50%, transparent 65%)',
+          animation: 'duoShine 3s ease-in-out infinite',
+        }} />
+      )}
+
+      {/* Bestseller badge */}
+      {isBestseller && (
+        <div style={{
+          position: 'absolute', top: compact ? 5 : 6, right: compact ? 5 : 6, zIndex: 2,
+          background: 'linear-gradient(135deg,#d4922a,#C8883A)',
+          color: '#000',
+          fontSize: compact ? 7 : 8,
+          fontWeight: 800,
+          letterSpacing: '0.07em',
+          padding: compact ? '2px 5px' : '2px 6px',
+          borderRadius: 20,
+          textTransform: 'uppercase' as const,
+          boxShadow: '0 2px 8px rgba(200,136,58,0.4)',
+        }}>★ Bestseller</div>
+      )}
+
       <div style={{ display: 'flex', gap: 3, alignItems: 'center', height: 16, flexWrap: 'nowrap' }}>
         {Array.from({ length: fmt.eyes }).map((_, i) => (
           <div key={i} style={{
@@ -373,6 +401,10 @@ export default function Configurator({
         @keyframes ctaGlow {
           0%,100%{box-shadow:0 0 20px rgba(200,136,58,.25),0 4px 16px rgba(0,0,0,.4)}
           50%{box-shadow:0 0 36px rgba(200,136,58,.45),0 4px 16px rgba(0,0,0,.4)}
+        }
+        @keyframes duoShine {
+          0%{transform:translateX(-100%)}
+          40%,100%{transform:translateX(200%)}
         }
       `}</style>
 
