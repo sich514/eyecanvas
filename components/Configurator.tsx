@@ -157,8 +157,8 @@ function CanvasPreview({ format, bgStyle, maxW = 560 }: { format: Format; bgStyl
   const photoMap: Partial<Record<Format, Record<BgStyle, string>>> = {
     solo:  { classic: '/order/solo/classic.png',  stardust: '/order/solo/stardust.jpg' },
     duo:   { classic: '/order/duo/classic.png',   stardust: '/order/duo/stardust.jpg' },
-    trio:  { classic: '/order/trio/classic.png',  stardust: '/order/trio/stardust.jpg' },
-    quad:  { classic: '/order/quad/classic.png',  stardust: '/order/quad/stardust.jpg' },
+    trio:  { classic: '/order/trio/classic.jpg',  stardust: '/order/trio/stardust.jpg' },
+    quad:  { classic: '/order/quad/classic.jpg',  stardust: '/order/quad/stardust.jpg' },
   }
   const photo = photoMap[format]?.[bgStyle]
 
