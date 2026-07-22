@@ -48,10 +48,10 @@ export default function BeforeAfterSlider() {
       itemOne={
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <ReactCompareSliderImage
-            src="/iris-blur.png"
+            src="/before-eye.jpg"
             alt="Original eye photo"
             style={{
-              filter: 'blur(2.5px) brightness(0.52) saturate(0.3)',
+              filter: 'blur(1px) brightness(0.6) saturate(0.25)',
               width: '100%',
               height: '100%',
               objectFit: 'cover',
@@ -80,7 +80,7 @@ export default function BeforeAfterSlider() {
       itemTwo={
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <ReactCompareSliderImage
-            src="/iris-hero.jpg"
+            src="/after-eye.jpg"
             alt="AI enhanced eye"
             style={{
               filter: 'brightness(1.06) saturate(1.3) contrast(1.06)',
