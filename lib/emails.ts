@@ -69,6 +69,44 @@ export async function sendShippedEmail(order: Order) {
   })
 }
 
+export async function sendWallpaperEmail(email: string, name: string, urls: { desktop: string; phone: string }) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: '✦ Your Digital Art Pack is ready — download now',
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:40px 32px;border-radius:16px">
+        <div style="text-align:center;margin-bottom:32px">
+          <span style="font-size:32px;letter-spacing:-1px"><span style="color:#fff">Iris</span><span style="color:#C8883A">ify</span></span>
+        </div>
+        <h1 style="font-size:26px;font-weight:700;color:#fff;margin:0 0 8px">Your iris is ready to glow. ✦</h1>
+        <p style="color:#888;font-size:15px;margin:0 0 32px">Hi ${name}, your Digital Art Pack is ready. Two files — your iris on every screen.</p>
+
+        <div style="background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:24px;margin-bottom:16px">
+          <div style="font-size:11px;color:#C8883A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">🖥 Desktop Wallpaper — 4K (3840×2160)</div>
+          <a href="${urls.desktop}" style="display:inline-block;background:linear-gradient(135deg,#d4922a,#C8883A);color:#000;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px">
+            Download Desktop Wallpaper →
+          </a>
+          <div style="font-size:12px;color:#555;margin-top:8px">Works on Mac, Windows, and any 4K display</div>
+        </div>
+
+        <div style="background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:24px;margin-bottom:32px">
+          <div style="font-size:11px;color:#C8883A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">📱 Phone Wallpaper — iPhone Pro Max (1290×2796)</div>
+          <a href="${urls.phone}" style="display:inline-block;background:linear-gradient(135deg,#d4922a,#C8883A);color:#000;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px">
+            Download Phone Wallpaper →
+          </a>
+          <div style="font-size:12px;color:#555;margin-top:8px">Save to Photos → set as wallpaper</div>
+        </div>
+
+        <div style="border-top:1px solid #1e1e1e;padding-top:20px;text-align:center">
+          <p style="color:#555;font-size:12px;margin:0">Links expire in 7 days. Questions? Reply to this email.</p>
+        </div>
+      </div>
+    `,
+  })
+}
+
 export async function sendRevisionNotificationEmail(order: Order) {
   const resend = new Resend(process.env.RESEND_API_KEY)
   const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@irisify.co'

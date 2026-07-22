@@ -31,14 +31,6 @@ function UploadFlow() {
 
   const fmt = FORMATS.find(f => f.id === format) ?? FORMATS[0]
   const eyeCount = fmt.eyes
-  const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_PRICES[format] : 0) + SHIPPING[format]
-
-  useEffect(() => {
-    import('@/lib/meta-pixel').then(({ MetaPixel }) => {
-      MetaPixel.addToCart({ size: fmt.size, price: total, style })
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const [step, setStep] = useState<Step>('upload')
   const [files, setFiles] = useState<(File | null)[]>(() => Array(eyeCount).fill(null))
@@ -48,7 +40,18 @@ function UploadFlow() {
   const [uploadResults, setUploadResults] = useState<({ upload_id: string; url: string } | null)[]>(() => Array(eyeCount).fill(null))
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<CustomerInfo>({ name: '', email: '', line1: '', line2: '', city: '', state: '', postal_code: '', country: 'US' })
+  const [wallpaperPack, setWallpaperPack] = useState(false)
   const [checkingOut, setCheckingOut] = useState(false)
+
+  const WALLPAPER_PRICE = 7
+  const total = BASE_PRICES[format] + (style === 'stardust' ? STARDUST_PRICES[format] : 0) + SHIPPING[format] + (wallpaperPack ? WALLPAPER_PRICE : 0)
+
+  useEffect(() => {
+    import('@/lib/meta-pixel').then(({ MetaPixel }) => {
+      MetaPixel.addToCart({ size: fmt.size, price: total, style })
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   const allFilesSelected = files.every(f => f !== null)
@@ -121,6 +124,7 @@ function UploadFlow() {
           customer_name: info.name,
           customer_email: info.email,
           shipping_address: { line1: info.line1, line2: info.line2, city: info.city, state: info.state, postal_code: info.postal_code, country: info.country },
+          wallpaper_pack: wallpaperPack,
         }),
       })
       const data = await res.json()
@@ -357,10 +361,48 @@ function UploadFlow() {
                   <span style={{ color: '#C8883A', fontSize: 14 }}>+${STARDUST_PRICES[format]}</span>
                 </div>
               )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ color: '#555', fontSize: 14 }}>Shipping</span>
                 <span style={{ color: '#fff', fontSize: 14 }}>${SHIPPING[format]}</span>
               </div>
+
+              {/* Wallpaper Pack upsell */}
+              <div
+                onClick={() => setWallpaperPack(p => !p)}
+                style={{
+                  marginBottom: 12, padding: '12px 14px', borderRadius: 12, cursor: 'pointer',
+                  border: `1.5px solid ${wallpaperPack ? '#C8883A' : '#2a2a2a'}`,
+                  background: wallpaperPack ? 'rgba(200,136,58,0.07)' : '#0a0a0a',
+                  transition: 'all 200ms',
+                  display: 'flex', alignItems: 'flex-start', gap: 12,
+                }}
+              >
+                <div style={{
+                  width: 20, height: 20, borderRadius: 6, border: `1.5px solid ${wallpaperPack ? '#C8883A' : '#444'}`,
+                  background: wallpaperPack ? '#C8883A' : 'transparent',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0, marginTop: 1, transition: 'all 200ms',
+                }}>
+                  {wallpaperPack && (
+                    <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                      <path d="M1 4l3 3 6-6" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>
+                      ✦ Add Digital Art Pack
+                    </span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#C8883A' }}>+$7</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: '#666', marginTop: 3, lineHeight: 1.5 }}>
+                    🖥 Desktop wallpaper (4K) + 📱 Phone wallpaper<br/>
+                    <span style={{ color: '#C8883A' }}>Delivered to your email instantly</span>
+                  </div>
+                </div>
+              </div>
+
               <div style={{ borderTop: '1px solid #1e1e1e', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontWeight: 700, fontSize: 15 }}>Total</span>
                 <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 24, fontWeight: 700, color: '#C8883A' }}>${total}</span>

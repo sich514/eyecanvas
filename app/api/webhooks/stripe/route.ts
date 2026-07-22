@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createServiceClient } from '@/lib/supabase'
 import { upscaleImage } from '@/lib/replicate'
-import { sendPreviewEmail } from '@/lib/emails'
+import { sendPreviewEmail, sendWallpaperEmail } from '@/lib/emails'
 import { sendCapiEvent } from '@/lib/meta-capi'
+import { generateWallpapers } from '@/lib/wallpapers'
 
 const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -97,6 +98,16 @@ export async function POST(req: NextRequest) {
 
     if (updatedOrder) {
       await sendPreviewEmail(updatedOrder)
+
+      // If wallpaper pack purchased — generate & email wallpapers
+      if (updatedOrder.wallpaper_pack && publicUrlData.publicUrl) {
+        try {
+          const wallpapers = await generateWallpapers(publicUrlData.publicUrl, orderId, supabase)
+          await sendWallpaperEmail(updatedOrder.customer_email, updatedOrder.customer_name, wallpapers)
+        } catch (wpErr) {
+          console.error('Wallpaper generation error:', wpErr)
+        }
+      }
     }
   } catch (err) {
     console.error('Enhancement error for order', orderId, err)
