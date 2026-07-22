@@ -511,7 +511,10 @@ export default function Configurator({
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: '#888', fontSize: 14 }}>Shipping</span>
-                <span style={{ color: '#fff', fontSize: 14, fontWeight: 500 }}>${shipping}</span>
+                {shipping === 0
+                  ? <span style={{ color: '#4ade80', fontSize: 14, fontWeight: 600 }}>Free ✦</span>
+                  : <span style={{ color: '#fff', fontSize: 14, fontWeight: 500 }}>${shipping}</span>
+                }
               </div>
             </div>
 
