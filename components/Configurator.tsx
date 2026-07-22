@@ -85,7 +85,7 @@ export const BASE_PRICES: Record<Format, number> = {
   solo: 89, duo: 129, trio: 159, quad: 199,
 }
 export const SHIPPING: Record<Format, number> = {
-  solo: 7, duo: 9, trio: 11, quad: 13,
+  solo: 7, duo: 9, trio: 0, quad: 0,
 }
 export const STARDUST_PRICES: Record<Format, number> = {
   solo: 15, duo: 20, trio: 25, quad: 39,
