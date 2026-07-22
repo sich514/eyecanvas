@@ -388,8 +388,15 @@ export default function InlineOrderFlow() {
                         border: `1.5px solid ${wallpaperPack ? '#C8883A' : '#2a2a2a'}`,
                         background: wallpaperPack ? 'rgba(200,136,58,0.07)' : '#0a0a0a',
                         transition: 'all 200ms', display: 'flex', alignItems: 'flex-start', gap: 10,
+                        position: 'relative', overflow: 'hidden',
                       }}
                     >
+                      {/* Shine sweep */}
+                      <div style={{
+                        position: 'absolute', inset: 0, pointerEvents: 'none',
+                        background: 'linear-gradient(105deg, transparent 30%, rgba(200,136,58,0.15) 50%, transparent 70%)',
+                        animation: 'duoShine 3s ease-in-out infinite',
+                      }} />
                       <div style={{
                         width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
                         border: `1.5px solid ${wallpaperPack ? '#C8883A' : '#444'}`,
@@ -474,6 +481,7 @@ export default function InlineOrderFlow() {
       <style>{`
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(24px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
+        @keyframes duoShine { 0%{transform:translateX(-100%)} 40%,100%{transform:translateX(200%)} }
       `}</style>
     </>
   )
