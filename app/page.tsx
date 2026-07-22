@@ -148,22 +148,45 @@ export default function LandingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORG) }} />
       <PageTracker />
 
-      {/* ── NAV ─────────────────────────────────────────── */}
-      <nav className="fixed left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-5"
-        style={{ top: 35, background: 'linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%)' }}
-      >
-        <IrisifyLogo size="md" />
-        <div className="flex items-center gap-6">
-          <a href="#how-it-works" className="hidden md:block text-sm text-white/60 hover:text-white transition-colors">How it works</a>
-          <ScrollToPricingBtn className="hidden md:block text-sm text-white/60 hover:text-white transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Pricing</ScrollToPricingBtn>
-          <ScrollToPricingBtn
-            className="px-5 py-2.5 rounded-full text-sm font-semibold text-[#0a0a0a] transition-all hover:brightness-110"
-            style={{ background: '#C8883A', border: 'none', cursor: 'pointer' }}
-          >
-            Get started
-          </ScrollToPricingBtn>
+      {/* ── HEADER (announcement + nav) ─────────────────── */}
+      <div className="fixed left-0 right-0 z-50" style={{ top: 0 }}>
+        {/* Announcement bar */}
+        <div style={{
+          background: '#160c00',
+          borderBottom: '1px solid rgba(200,136,58,0.25)',
+          padding: '7px 16px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: 6, fontSize: 12, letterSpacing: '0.01em',
+          whiteSpace: 'nowrap', overflow: 'hidden',
+        }}>
+          <span style={{ color: '#4ade80', fontSize: 12 }}>✦</span>
+          <span style={{ color: '#ccc', fontWeight: 500 }}>
+            Free shipping on <strong style={{ color: '#fff' }}>Trio</strong> & <strong style={{ color: '#fff' }}>Quad</strong>
+          </span>
+          <span className="hidden sm:flex" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ color: 'rgba(200,136,58,0.4)' }}>·</span>
+            <span style={{ color: '#C8883A' }}>Ships in 5–7 days</span>
+            <span style={{ color: 'rgba(200,136,58,0.4)' }}>·</span>
+            <span style={{ color: '#777' }}>Gallery-quality canvas</span>
+          </span>
         </div>
-      </nav>
+        {/* Main nav */}
+        <nav className="flex items-center justify-between px-6 md:px-10 py-4"
+          style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.96) 0%, transparent 100%)' }}
+        >
+          <IrisifyLogo size="md" />
+          <div className="flex items-center gap-6">
+            <a href="#how-it-works" className="hidden md:block text-sm text-white/60 hover:text-white transition-colors">How it works</a>
+            <ScrollToPricingBtn className="hidden md:block text-sm text-white/60 hover:text-white transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Pricing</ScrollToPricingBtn>
+            <ScrollToPricingBtn
+              className="px-5 py-2.5 rounded-full text-sm font-semibold text-[#0a0a0a] transition-all hover:brightness-110"
+              style={{ background: '#C8883A', border: 'none', cursor: 'pointer' }}
+            >
+              Get started
+            </ScrollToPricingBtn>
+          </div>
+        </nav>
+      </div>
 
       {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative w-full h-screen min-h-[600px] flex flex-col items-center justify-center overflow-hidden">

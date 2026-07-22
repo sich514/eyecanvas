@@ -51,7 +51,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${playfair.variable} ${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
         <UTMSaver />
-        <AnnouncementBar />
         {children}
         <StickyScrollHeader />
         <WhatsAppButton />
